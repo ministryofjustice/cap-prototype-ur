@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/test-utils/testPdfAppSetup.ts"],
+  "sourcesContent": ["import express, { Express } from 'express';\n\nimport setUpi18n from '../middleware/setUpi18n';\nimport Pdf from '../pdf/pdf';\nimport { sessionMock } from '../test-utils/testMocks';\n\nexport const TEST_PATH = '/test';\n\nconst testAppSetup = (addToPdf: (pdf: Pdf) => void): Express => {\n  const app = express();\n\n  app.disable('x-powered-by');\n  app.use(setUpi18n());\n  app.use((req, _response, next) => {\n    req.session = sessionMock;\n    next();\n  });\n  app.get(TEST_PATH, (request, response) => {\n    const pdf = new Pdf(false, request);\n    addToPdf(pdf);\n    response.setHeader('Content-Type', 'application/pdf');\n    response.setHeader('Content-Disposition', `attachment; filename=test.pdf`);\n    response.send(Buffer.from(pdf.toArrayBuffer()));\n  });\n\n  return app;\n};\n\nexport default testAppSetup;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAiC;AAEjC,uBAAsB;AACtB,iBAAgB;AAChB,uBAA4B;AAErB,MAAM,YAAY;AAEzB,MAAM,eAAe,CAAC,aAA0C;AAC9D,QAAM,UAAM,eAAAA,SAAQ;AAEpB,MAAI,QAAQ,cAAc;AAC1B,MAAI,QAAI,iBAAAC,SAAU,CAAC;AACnB,MAAI,IAAI,CAAC,KAAK,WAAW,SAAS;AAChC,QAAI,UAAU;AACd,SAAK;AAAA,EACP,CAAC;AACD,MAAI,IAAI,WAAW,CAAC,SAAS,aAAa;AACxC,UAAM,MAAM,IAAI,WAAAC,QAAI,OAAO,OAAO;AAClC,aAAS,GAAG;AACZ,aAAS,UAAU,gBAAgB,iBAAiB;AACpD,aAAS,UAAU,uBAAuB,+BAA+B;AACzE,aAAS,KAAK,OAAO,KAAK,IAAI,cAAc,CAAC,CAAC;AAAA,EAChD,CAAC;AAED,SAAO;AACT;AAEA,IAAO,0BAAQ;",
+  "names": ["express", "setUpi18n", "Pdf"]
+}

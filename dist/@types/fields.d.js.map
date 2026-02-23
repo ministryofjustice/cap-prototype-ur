@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/@types/fields.d.ts"],
+  "sourcesContent": ["export type yesOrNo = 'Yes' | 'No';\nexport type whereMostlyLive = 'withInitial' | 'withSecondary' | 'split' | 'other';\nexport type dayValues = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';\nexport type whichDaysField = (dayValues | 'other')[];\nexport type getBetweenHouseholdsField = 'initialCollects' | 'secondaryCollects' | 'other';\nexport type whereHandoverField = 'neutral' | 'initialHome' | 'secondaryHome' | 'school' | 'someoneElse';\nexport type planLastMinuteChangesField = 'text' | 'email' | 'phone' | 'app' | 'anotherArrangement';\n"],
+  "mappings": ";;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

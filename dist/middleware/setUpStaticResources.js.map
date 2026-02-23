@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/middleware/setUpStaticResources.ts"],
+  "sourcesContent": ["import path from 'path';\n\nimport compression from 'compression';\nimport { Router, static as expressStatic } from 'express';\nimport noCache from 'nocache';\n\nimport config from '../config';\n\nconst setUpStaticResources = (): Router => {\n  const router = Router();\n\n  router.use(compression());\n\n  //  Static Resources Configuration\n  const staticResourcesConfig = { maxAge: config.staticResourceCacheDuration, redirect: false };\n\n  Array.of('/dist/assets', '/node_modules/govuk-frontend/dist/govuk/assets').forEach((dir) => {\n    router.use('/assets', expressStatic(path.join(process.cwd(), dir), staticResourcesConfig));\n  });\n\n  // Don't cache dynamic resources\n  router.use(noCache());\n\n  return router;\n};\n\nexport default setUpStaticResources;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,kBAAiB;AAEjB,yBAAwB;AACxB,qBAAgD;AAChD,qBAAoB;AAEpB,oBAAmB;AAEnB,MAAM,uBAAuB,MAAc;AACzC,QAAM,aAAS,uBAAO;AAEtB,SAAO,QAAI,mBAAAA,SAAY,CAAC;AAGxB,QAAM,wBAAwB,EAAE,QAAQ,cAAAC,QAAO,6BAA6B,UAAU,MAAM;AAE5F,QAAM,GAAG,gBAAgB,gDAAgD,EAAE,QAAQ,CAAC,QAAQ;AAC1F,WAAO,IAAI,eAAW,eAAAC,QAAc,YAAAC,QAAK,KAAK,QAAQ,IAAI,GAAG,GAAG,GAAG,qBAAqB,CAAC;AAAA,EAC3F,CAAC;AAGD,SAAO,QAAI,eAAAC,SAAQ,CAAC;AAEpB,SAAO;AACT;AAEA,IAAO,+BAAQ;",
+  "names": ["compression", "config", "expressStatic", "path", "noCache"]
+}

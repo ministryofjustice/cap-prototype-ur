@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/middleware/setupFlashMessages.ts"],
+  "sourcesContent": ["import { Request, Response, NextFunction } from 'express';\n\nconst setupFlashMessages = () => {\n  return (req: Request, res: Response, next: NextFunction) => {\n    res.locals.info = req.flash('info');\n    next();\n  };\n};\n\nexport default setupFlashMessages;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,MAAM,qBAAqB,MAAM;AAC/B,SAAO,CAAC,KAAc,KAAe,SAAuB;AAC1D,QAAI,OAAO,OAAO,IAAI,MAAM,MAAM;AAClC,SAAK;AAAA,EACP;AACF;AAEA,IAAO,6BAAQ;",
+  "names": []
+}

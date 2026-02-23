@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/logging/logger.ts"],
+  "sourcesContent": ["import { createLogger, LogLevelString } from 'bunyan';\nimport bunyanFormat from 'bunyan-format';\n\nimport config from '../config';\n\n\nconst formatOut = bunyanFormat({ outputMode: 'short', color: !config.production });\n\nconst logger = createLogger({\n  name: 'PFL Care Arrangement Plan',\n  stream: formatOut,\n  level: (process.env.LOG_LEVEL || 'info') as LogLevelString,\n});\n\nexport default logger;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,oBAA6C;AAC7C,2BAAyB;AAEzB,oBAAmB;AAGnB,MAAM,gBAAY,qBAAAA,SAAa,EAAE,YAAY,SAAS,OAAO,CAAC,cAAAC,QAAO,WAAW,CAAC;AAEjF,MAAM,aAAS,4BAAa;AAAA,EAC1B,MAAM;AAAA,EACN,QAAQ;AAAA,EACR,OAAQ,QAAQ,IAAI,aAAa;AACnC,CAAC;AAED,IAAO,iBAAQ;",
+  "names": ["bunyanFormat", "config"]
+}

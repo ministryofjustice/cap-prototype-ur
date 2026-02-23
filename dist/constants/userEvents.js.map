@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/constants/userEvents.ts"],
+  "sourcesContent": ["const UserEvents = {\n  PAGE_VISIT: 'page_visit',\n  DOWNLOAD: 'download',\n  LINK_CLICK: 'link_click',\n  PAGE_EXIT: 'page_exit',\n  QUICK_EXIT: 'quick_exit'\n};\n\nexport default UserEvents;"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,MAAM,aAAa;AAAA,EACjB,YAAY;AAAA,EACZ,UAAU;AAAA,EACV,YAAY;AAAA,EACZ,WAAW;AAAA,EACX,YAAY;AACd;AAEA,IAAO,qBAAQ;",
+  "names": []
+}

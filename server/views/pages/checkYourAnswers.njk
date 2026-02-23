@@ -1,0 +1,395 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{# Macro to format per-child answers for display #}
+{% macro formatPerChildAnswer(answer, numberOfChildren) %}
+  {% if answer.defaultAnswer is defined %}
+    {# This is a per-child answer structure #}
+    {% set perChildCount = answer.perChildAnswers | length if answer.perChildAnswers else 0 %}
+    {# Show per-child specific answers first #}
+    {% if answer.perChildAnswers %}
+      {% for childAnswer in answer.perChildAnswers %}
+        <p class="govuk-body govuk-!-margin-bottom-1"><strong>For {{ childAnswer.childName }}:</strong></p>
+        <p class="govuk-body govuk-!-margin-bottom-2">{{ childAnswer.answer }}</p>
+      {% endfor %}
+    {% endif %}
+    {# Then show default answer for remaining children #}
+    {% if perChildCount < numberOfChildren %}
+      <p class="govuk-body govuk-!-margin-bottom-1"><strong>{% if perChildCount > 0 %}For all other children:{% else %}For all children:{% endif %}</strong></p>
+      <p class="govuk-body govuk-!-margin-bottom-2">{{ answer.defaultAnswer }}</p>
+    {% endif %}
+  {% else %}
+    {# Simple string answer #}
+    {{ answer }}
+  {% endif %}
+{% endmacro %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      <h2 class="govuk-heading-m">{{ __('taskList.whoThePlanIsFor') }}</h2>
+      {{
+        govukSummaryList({
+        classes: "govuk-!-margin-bottom-9",
+        rows: [
+          {
+            key: {
+              text: __('taskList.theChildren')
+            },
+            value: {
+              text: values.childrenNames
+            },
+            actions: {
+              items: [
+                {
+                  href: paths.NUMBER_OF_CHILDREN,
+                  text: __('checkYourAnswers.change.text'),
+                  visuallyHiddenText: __('checkYourAnswers.change.children')
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text:  __('taskList.whoIsUsing')
+            },
+            value: {
+              text: values.adultNames
+            },
+            actions: {
+              items: [
+                {
+                  href: paths.ABOUT_THE_ADULTS,
+                  text: __('checkYourAnswers.change.text'),
+                  visuallyHiddenText: __('checkYourAnswers.change.users')
+                }
+              ]
+            }
+          }
+        ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.livingAndVisiting') }}</h2>
+      {{
+        govukSummaryList({
+          classes: "govuk-!-margin-bottom-9",
+          rows: [
+            {
+              key: {
+                text: __('livingAndVisiting.mostlyLive.title')
+              },
+              value: {
+                html: formatPerChildAnswer(values.mostlyLive, values.numberOfChildren)
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.LIVING_VISITING_MOSTLY_LIVE,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.whereWillTheChildrenLive')
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: __('livingAndVisiting.whichSchedule.title')
+              },
+              value: {
+                html: formatPerChildAnswer(values.whichSchedule, values.numberOfChildren)
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.LIVING_VISITING_WHICH_SCHEDULE,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.whichSchedule')
+                  }
+                ]
+              }
+            } if values.whichSchedule else null,
+            {
+              key: {
+                text: __('livingAndVisiting.willOvernightsHappen.title', {adult: values.parentNotMostlyLivedWith})
+              },
+              value: {
+                text: values.willOvernightsHappen
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.LIVING_VISITING_WILL_OVERNIGHTS_HAPPEN,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.willOvernightsHappen', {adult: values.parentNotMostlyLivedWith})
+                  }
+                ]
+              }
+            } if values.willOvernightsHappen else null,
+            {
+              key: {
+                text: __('livingAndVisiting.whichDaysOvernight.title')
+              },
+              value: {
+                text: values.whichDaysOvernight
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.LIVING_VISITING_WHICH_DAYS_OVERNIGHT,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.whichDaysOvernight')
+                  }
+                ]
+              }
+            } if values.whichDaysOvernight else null,
+            {
+              key: {
+                text: __('livingAndVisiting.willDaytimeVisitsHappen.title', {adult: values.parentNotMostlyLivedWith})
+              },
+              value: {
+                text: values.willDaytimeVisitsHappen
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.LIVING_VISITING_WILL_DAYTIME_VISITS_HAPPEN,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.willDaytimeVisitsHappen', {adult: values.parentNotMostlyLivedWith})
+                  }
+                ]
+              }
+            } if values.willDaytimeVisitsHappen else null,
+            {
+              key: {
+                text: __('livingAndVisiting.whichDaysDaytimeVisits.title')
+              },
+              value: {
+                text: values.whichDaysDaytimeVisits
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.LIVING_VISITING_WHICH_DAYS_DAYTIME_VISITS,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.whichDaysDaytimeVisits')
+                  }
+                ]
+              }
+            } if values.whichDaysDaytimeVisits else null
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.handoverAndHolidays') }}</h2>
+      {{
+        govukSummaryList({
+          classes: "govuk-!-margin-bottom-9",
+          rows: [
+            {
+              key: {
+                text: __('handoverAndHolidays.getBetweenHouseholds.title')
+              },
+              value: {
+                html: formatPerChildAnswer(values.getBetweenHouseholds, values.numberOfChildren)
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.HANDOVER_HOLIDAYS_GET_BETWEEN_HOUSEHOLDS,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.getBetweenHouseholds')
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: __('handoverAndHolidays.whereHandover.title')
+              },
+              value: {
+                html: formatPerChildAnswer(values.whereHandover, values.numberOfChildren)
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.HANDOVER_HOLIDAYS_WHERE_HANDOVER,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.whereHandover')
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: __('handoverAndHolidays.willChangeDuringSchoolHolidays.title')
+              },
+              value: {
+                text: values.willChangeDuringSchoolHolidays
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.HANDOVER_HOLIDAYS_WILL_CHANGE_DURING_SCHOOL_HOLIDAYS,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.willChangeDuringSchoolHolidays')
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: __('handoverAndHolidays.howChangeDuringSchoolHolidays.title')
+              },
+              value: {
+                html: formatPerChildAnswer(values.howChangeDuringSchoolHolidays, values.numberOfChildren)
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.HANDOVER_HOLIDAYS_HOW_CHANGE_DURING_SCHOOL_HOLIDAYS,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.howChangeDuringSchoolHolidays')
+                  }
+                ]
+              }
+            } if values.howChangeDuringSchoolHolidays else null,
+            {
+              key: {
+                text: __('handoverAndHolidays.itemsForChangeover.title')
+              },
+              value: {
+                text: values.itemsForChangeover
+              },
+              actions: {
+                items: [
+                  {
+                    href: paths.HANDOVER_HOLIDAYS_ITEMS_FOR_CHANGEOVER,
+                    text: __('checkYourAnswers.change.text'),
+                    visuallyHiddenText: __('checkYourAnswers.change.itemsForChangeover')
+                  }
+                ]
+              }
+            }
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.specialDays') }}</h2>
+      {{
+        govukSummaryList({
+        classes: "govuk-!-margin-bottom-9",
+        rows: [
+          {
+            key: {
+              text: __('specialDays.whatWillHappen.title')
+            },
+            value: {
+              html: formatPerChildAnswer(values.whatWillHappen, values.numberOfChildren)
+            },
+            actions: {
+              items: [
+                {
+                  href: paths.SPECIAL_DAYS_WHAT_WILL_HAPPEN,
+                  text: __('checkYourAnswers.change.text'),
+                  visuallyHiddenText: __('checkYourAnswers.change.whatWillHappen')
+                }
+              ]
+            }
+          }
+        ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.otherThings') }}</h2>
+      {{
+        govukSummaryList({
+        classes: "govuk-!-margin-bottom-9",
+        rows: [
+          {
+            key: {
+              text: __('otherThings.whatOtherThingsMatter.title')
+            },
+            value: {
+              text: values.whatOtherThingsMatter
+            },
+            actions: {
+              items: [
+                {
+                  href: paths.OTHER_THINGS_WHAT_OTHER_THINGS_MATTER,
+                  text: __('checkYourAnswers.change.text'),
+                  visuallyHiddenText: __('checkYourAnswers.change.whatOtherThingsMatter')
+                }
+              ]
+            }
+          }
+        ]
+        })
+      }}
+      <h2 class="govuk-heading-m">{{ __('taskList.decisionMaking') }}</h2>
+      {{
+        govukSummaryList({
+        classes: "govuk-!-margin-bottom-9",
+        rows: [
+          {
+            key: {
+              text: __('decisionMaking.planLastMinuteChanges.title')
+            },
+            value: {
+              text: values.planLastMinuteChanges
+            },
+            actions: {
+              items: [
+                {
+                  href: paths.DECISION_MAKING_PLAN_LAST_MINUTE_CHANGES,
+                  text: __('checkYourAnswers.change.text'),
+                  visuallyHiddenText: __('checkYourAnswers.change.planLastMinuteChanges')
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: __('decisionMaking.planLongTermNotice.title')
+            },
+            value: {
+              text: values.planLongTermNotice
+            },
+            actions: {
+              items: [
+                {
+                  href: paths.DECISION_MAKING_PLAN_LONG_TERM_NOTICE,
+                  text: __('checkYourAnswers.change.text'),
+                  visuallyHiddenText: __('checkYourAnswers.change.planLongTermNotice')
+                }
+              ]
+            }
+          },
+          {
+            key: {
+              text: __('decisionMaking.planReview.title')
+            },
+            value: {
+              text: values.planReview
+            },
+            actions: {
+              items: [
+                {
+                  href: paths.DECISION_MAKING_PLAN_REVIEW,
+                  text: __('checkYourAnswers.change.text'),
+                  visuallyHiddenText: __('checkYourAnswers.change.planReview')
+                }
+              ]
+            }
+          }
+        ]
+        })
+      }}
+
+      {{ govukButton({text: __('continue'), href: paths.SHARE_PLAN }) }}
+    </div>
+  </div>
+{% endblock %}

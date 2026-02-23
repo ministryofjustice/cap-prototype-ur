@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/routes/contactUs.ts"],
+  "sourcesContent": ["import type { Router } from 'express-serve-static-core';\n\nimport paths from '../constants/paths';\nimport { getBackUrl } from '../utils/sessionHelpers';\n\nconst contactUsRoutes = (router: Router) => {\n  router.get(paths.CONTACT_US, (request, response) => {\n    response.render('pages/contactUs', {\n      title: request.__('contactUs.title'),\n      backLinkHref: getBackUrl(request.session, paths.START),\n    });\n  });\n};\n\nexport default contactUsRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,mBAAkB;AAClB,4BAA2B;AAE3B,MAAM,kBAAkB,CAAC,WAAmB;AAC1C,SAAO,IAAI,aAAAA,QAAM,YAAY,CAAC,SAAS,aAAa;AAClD,aAAS,OAAO,mBAAmB;AAAA,MACjC,OAAO,QAAQ,GAAG,iBAAiB;AAAA,MACnC,kBAAc,kCAAW,QAAQ,SAAS,aAAAA,QAAM,KAAK;AAAA,IACvD,CAAC;AAAA,EACH,CAAC;AACH;AAEA,IAAO,oBAAQ;",
+  "names": ["paths"]
+}

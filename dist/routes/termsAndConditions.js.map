@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/routes/termsAndConditions.ts"],
+  "sourcesContent": ["import type { Router } from 'express-serve-static-core';\n\nimport paths from '../constants/paths';\nimport { getBackUrl } from '../utils/sessionHelpers';\n\nconst termsAndConditionsRoutes = (router: Router) => {\n  router.get(paths.TERMS_AND_CONDITIONS, (request, response) => {\n    response.render('pages/termsAndConditions', {\n      title: request.__('termsAndConditions.title'),\n      backLinkHref: getBackUrl(request.session, paths.START),\n    });\n  });\n};\n\nexport default termsAndConditionsRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,mBAAkB;AAClB,4BAA2B;AAE3B,MAAM,2BAA2B,CAAC,WAAmB;AACnD,SAAO,IAAI,aAAAA,QAAM,sBAAsB,CAAC,SAAS,aAAa;AAC5D,aAAS,OAAO,4BAA4B;AAAA,MAC1C,OAAO,QAAQ,GAAG,0BAA0B;AAAA,MAC5C,kBAAc,kCAAW,QAAQ,SAAS,aAAAA,QAAM,KAAK;AAAA,IACvD,CAAC;AAAA,EACH,CAAC;AACH;AAEA,IAAO,6BAAQ;",
+  "names": ["paths"]
+}

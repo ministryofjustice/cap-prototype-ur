@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/routes/decisionMaking/index.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport planLastMinuteChanges from './planLastMinuteChanges';\nimport planLongTermNotice from './planLongTermNotice';\nimport planReview from './planReview';\n\nconst decisionMakingRoutes = (router: Router) => {\n  planLastMinuteChanges(router);\n  planLongTermNotice(router);\n  planReview(router);\n};\n\nexport default decisionMakingRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,mCAAkC;AAClC,gCAA+B;AAC/B,wBAAuB;AAEvB,MAAM,uBAAuB,CAAC,WAAmB;AAC/C,mCAAAA,SAAsB,MAAM;AAC5B,gCAAAC,SAAmB,MAAM;AACzB,wBAAAC,SAAW,MAAM;AACnB;AAEA,IAAO,yBAAQ;",
+  "names": ["planLastMinuteChanges", "planLongTermNotice", "planReview"]
+}

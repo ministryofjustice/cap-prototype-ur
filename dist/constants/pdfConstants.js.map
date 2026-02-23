@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/constants/pdfConstants.ts"],
+  "sourcesContent": ["export const LINE_HEIGHT_RATIO = 1.5;\nexport const MARGIN_WIDTH = 10;\nexport const PARAGRAPH_SPACE = 5;\nexport const HEADER_HEIGHT = 22.4;\nexport const FOOTER_HEIGHT = 22.4;\nexport const MM_PER_POINT = 0.352778;\nexport const FONT = 'transport';\nexport const SECTION_HEADING_SIZE = 22;\nexport const QUESTION_TITLE_SIZE = 14;\nexport const MAIN_TEXT_SIZE = 12;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAO,MAAM,oBAAoB;AAC1B,MAAM,eAAe;AACrB,MAAM,kBAAkB;AACxB,MAAM,gBAAgB;AACtB,MAAM,gBAAgB;AACtB,MAAM,eAAe;AACrB,MAAM,OAAO;AACb,MAAM,uBAAuB;AAC7B,MAAM,sBAAsB;AAC5B,MAAM,iBAAiB;",
+  "names": []
+}

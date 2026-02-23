@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/pdf/components/base.ts"],
+  "sourcesContent": ["import Pdf from '../pdf';\n\nabstract class Base {\n  protected readonly pdf: Pdf;\n\n  protected constructor(pdf: Pdf) {\n    this.pdf = pdf;\n  }\n\n  addComponentToDocument() {\n    if (this.pdf.heightWillOverflowDocument(this.getComponentHeight())) {\n      this.handleComponentOverflowingPage();\n    } else {\n      this.createComponent();\n    }\n  }\n\n  protected abstract handleComponentOverflowingPage(): void;\n\n  protected abstract getComponentHeight(): number;\n\n  protected abstract createComponent(): void;\n}\n\nexport default Base;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,MAAe,KAAK;AAAA,EACC;AAAA,EAET,YAAY,KAAU;AAC9B,SAAK,MAAM;AAAA,EACb;AAAA,EAEA,yBAAyB;AACvB,QAAI,KAAK,IAAI,2BAA2B,KAAK,mBAAmB,CAAC,GAAG;AAClE,WAAK,+BAA+B;AAAA,IACtC,OAAO;AACL,WAAK,gBAAgB;AAAA,IACvB;AAAA,EACF;AAOF;AAEA,IAAO,eAAQ;",
+  "names": []
+}

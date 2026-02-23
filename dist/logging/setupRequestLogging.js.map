@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/logging/setupRequestLogging.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport logger from './logger';\n\nconst setupRequestLogging = (): Router => {\n  const router = Router();\n\n  router.use('*', (request, response, next) => {\n    const start = performance.now();\n    logger.debug(`Received ${request.method} ${request.originalUrl}`);\n\n    response.on('finish', () => {\n      const duration = performance.now() - start;\n      logger.debug(\n        `Responded to ${request.method} ${request.originalUrl} with ${response.statusCode} in ${duration.toFixed(0)}ms`,\n      );\n    });\n    next();\n  });\n  return router;\n};\n\nexport default setupRequestLogging;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAuB;AAEvB,oBAAmB;AAEnB,MAAM,sBAAsB,MAAc;AACxC,QAAM,aAAS,uBAAO;AAEtB,SAAO,IAAI,KAAK,CAAC,SAAS,UAAU,SAAS;AAC3C,UAAM,QAAQ,YAAY,IAAI;AAC9B,kBAAAA,QAAO,MAAM,YAAY,QAAQ,MAAM,IAAI,QAAQ,WAAW,EAAE;AAEhE,aAAS,GAAG,UAAU,MAAM;AAC1B,YAAM,WAAW,YAAY,IAAI,IAAI;AACrC,oBAAAA,QAAO;AAAA,QACL,gBAAgB,QAAQ,MAAM,IAAI,QAAQ,WAAW,SAAS,SAAS,UAAU,OAAO,SAAS,QAAQ,CAAC,CAAC;AAAA,MAC7G;AAAA,IACF,CAAC;AACD,SAAK;AAAA,EACP,CAAC;AACD,SAAO;AACT;AAEA,IAAO,8BAAQ;",
+  "names": ["logger"]
+}

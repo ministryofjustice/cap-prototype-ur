@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/routes/unauthenticatedRoutes.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport accessibilityStatementRoutes from './accessibilityStatement';\nimport contactUsRoutes from './contactUs';\nimport cookiesRoutes from './cookies';\nimport passwordRoutes from './password';\nimport privacyNoticeRoutes from './privacyNotice';\nimport termsAndConditionsRoutes from './termsAndConditions';\n\nconst routes = (): Router => {\n  const router = Router();\n  passwordRoutes(router);\n  cookiesRoutes(router);\n  accessibilityStatementRoutes(router);\n  contactUsRoutes(router);\n  privacyNoticeRoutes(router);\n  termsAndConditionsRoutes(router);\n\n  return router;\n};\n\nexport default routes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAuB;AAEvB,oCAAyC;AACzC,uBAA4B;AAC5B,qBAA0B;AAC1B,sBAA2B;AAC3B,2BAAgC;AAChC,gCAAqC;AAErC,MAAM,SAAS,MAAc;AAC3B,QAAM,aAAS,uBAAO;AACtB,sBAAAA,SAAe,MAAM;AACrB,qBAAAC,SAAc,MAAM;AACpB,oCAAAC,SAA6B,MAAM;AACnC,uBAAAC,SAAgB,MAAM;AACtB,2BAAAC,SAAoB,MAAM;AAC1B,gCAAAC,SAAyB,MAAM;AAE/B,SAAO;AACT;AAEA,IAAO,gCAAQ;",
+  "names": ["passwordRoutes", "cookiesRoutes", "accessibilityStatementRoutes", "contactUsRoutes", "privacyNoticeRoutes", "termsAndConditionsRoutes"]
+}

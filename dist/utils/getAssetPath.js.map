@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/utils/getAssetPath.ts"],
+  "sourcesContent": ["import path from 'path';\n\nconst getAssetPath = (fileName: string) => {\n  return path.resolve(__dirname, `../assets/${fileName}`);\n};\n\nexport default getAssetPath;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,kBAAiB;AAEjB,MAAM,eAAe,CAAC,aAAqB;AACzC,SAAO,YAAAA,QAAK,QAAQ,WAAW,aAAa,QAAQ,EAAE;AACxD;AAEA,IAAO,uBAAQ;",
+  "names": ["path"]
+}

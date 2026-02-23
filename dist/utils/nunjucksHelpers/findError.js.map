@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/utils/nunjucksHelpers/findError.ts"],
+  "sourcesContent": ["import { FieldValidationError } from 'express-validator';\n\n// find specific error and return errorMessage for field validation\nconst findError = (errors: FieldValidationError[], formFieldId: string) => {\n  if (!errors) return null;\n  const errorForMessage = errors.find((error) => error.path === formFieldId);\n\n  if (errorForMessage === undefined) return null;\n\n  return {\n    text: errorForMessage?.msg,\n  };\n};\n\nexport default findError;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAGA,MAAM,YAAY,CAAC,QAAgC,gBAAwB;AACzE,MAAI,CAAC,OAAQ,QAAO;AACpB,QAAM,kBAAkB,OAAO,KAAK,CAAC,UAAU,MAAM,SAAS,WAAW;AAEzE,MAAI,oBAAoB,OAAW,QAAO;AAE1C,SAAO;AAAA,IACL,MAAM,iBAAiB;AAAA,EACzB;AACF;AAEA,IAAO,oBAAQ;",
+  "names": []
+}

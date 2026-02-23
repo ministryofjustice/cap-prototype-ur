@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/middleware/setupServiceNoLongerAvailable.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport config from '../config';\n\nconst setupServiceNoLongerAvailable = (): Router => {\n  const router = Router();\n\n  router.use('*', (request, response, next) => {\n    if (new Date() < config.previewEnd) {\n      return next();\n    }\n    response.render('pages/serviceNoLongerAvailable', {\n      title: 'The private view of this service is now finished',\n    });\n  });\n  return router;\n};\n\nexport default setupServiceNoLongerAvailable;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAuB;AAEvB,oBAAmB;AAEnB,MAAM,gCAAgC,MAAc;AAClD,QAAM,aAAS,uBAAO;AAEtB,SAAO,IAAI,KAAK,CAAC,SAAS,UAAU,SAAS;AAC3C,QAAI,oBAAI,KAAK,IAAI,cAAAA,QAAO,YAAY;AAClC,aAAO,KAAK;AAAA,IACd;AACA,aAAS,OAAO,kCAAkC;AAAA,MAChD,OAAO;AAAA,IACT,CAAC;AAAA,EACH,CAAC;AACD,SAAO;AACT;AAEA,IAAO,wCAAQ;",
+  "names": ["config"]
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/middleware/setupRequestParsing.ts"],
+  "sourcesContent": ["import cookieParser from 'cookie-parser';\nimport { Router, json, urlencoded } from 'express';\n\nconst setUpWebRequestParsing = (): Router => {\n  const router = Router();\n  router.use(json());\n  router.use(urlencoded({ extended: true }));\n  router.use(cookieParser());\n  return router;\n};\n\nexport default setUpWebRequestParsing;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,2BAAyB;AACzB,qBAAyC;AAEzC,MAAM,yBAAyB,MAAc;AAC3C,QAAM,aAAS,uBAAO;AACtB,SAAO,QAAI,qBAAK,CAAC;AACjB,SAAO,QAAI,2BAAW,EAAE,UAAU,KAAK,CAAC,CAAC;AACzC,SAAO,QAAI,qBAAAA,SAAa,CAAC;AACzB,SAAO;AACT;AAEA,IAAO,8BAAQ;",
+  "names": ["cookieParser"]
+}

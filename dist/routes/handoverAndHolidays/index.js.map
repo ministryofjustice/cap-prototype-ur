@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/routes/handoverAndHolidays/index.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport getBetweenHouseholdsRoutes from './getBetweenHouseholds';\nimport howChangeDuringSchoolHolidaysRoutes from './howChangeDuringSchoolHolidays';\nimport itemsForChangeoverRoutes from './itemsForChangeover';\nimport whereHandoverRoutes from './whereHandover';\nimport willChangeDuringSchoolHolidaysRoutes from './willChangeDuringSchoolHolidays';\n\nconst handoverAndHolidaysRoutes = (router: Router) => {\n  getBetweenHouseholdsRoutes(router);\n  whereHandoverRoutes(router);\n  willChangeDuringSchoolHolidaysRoutes(router);\n  howChangeDuringSchoolHolidaysRoutes(router);\n  itemsForChangeoverRoutes(router);\n};\n\nexport default handoverAndHolidaysRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,kCAAuC;AACvC,2CAAgD;AAChD,gCAAqC;AACrC,2BAAgC;AAChC,4CAAiD;AAEjD,MAAM,4BAA4B,CAAC,WAAmB;AACpD,kCAAAA,SAA2B,MAAM;AACjC,2BAAAC,SAAoB,MAAM;AAC1B,4CAAAC,SAAqC,MAAM;AAC3C,2CAAAC,SAAoC,MAAM;AAC1C,gCAAAC,SAAyB,MAAM;AACjC;AAEA,IAAO,8BAAQ;",
+  "names": ["getBetweenHouseholdsRoutes", "whereHandoverRoutes", "willChangeDuringSchoolHolidaysRoutes", "howChangeDuringSchoolHolidaysRoutes", "itemsForChangeoverRoutes"]
+}

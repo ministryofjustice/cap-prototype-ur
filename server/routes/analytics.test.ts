@@ -1,0 +1,404 @@
+import request from 'supertest';
+
+import * as analyticsService from '../services/analyticsService';
+import testAppSetup from '../test-utils/testAppSetup';
+import { sessionMock } from '../test-utils/testMocks';
+
+const app = testAppSetup();
+
+jest.mock('../services/analyticsService');
+
+const mockedLogLinkClick = analyticsService.logLinkClick as jest.MockedFunction<typeof analyticsService.logLinkClick>;
+const mockedLogPageExit = analyticsService.logPageExit as jest.MockedFunction<typeof analyticsService.logPageExit>;
+const mockedLogQuickExit = analyticsService.logQuickExit as jest.MockedFunction<typeof analyticsService.logQuickExit>;
+
+describe('analytics session safety', () => {
+  it('does not save the session on analytics requests', async () => {
+    const saveMock = jest.fn();
+    sessionMock.save = saveMock;
+
+    await request(app)
+      .post('/api/analytics/page-exit')
+      .send({ exitPage: '/safety-check' })
+      .expect(204);
+
+    expect(saveMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('POST /api/analytics/link-click', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('logs a link click event with url and linkText', async () => {
+    const linkData = {
+      url: 'https://www.gov.uk/looking-after-children-divorce',
+      linkText: 'More information and support',
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(204);
+
+    expect(response.body).toEqual({});
+    // logLinkClick(request, url, linkText, linkType, currentPage)
+    expect(mockedLogLinkClick).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/api/analytics/link-click',
+      }),
+      linkData.url,
+      linkData.linkText,
+      undefined, // linkType - not provided in this test
+      undefined // currentPage - not provided in this test
+    );
+  });
+
+  it('logs a link click event with url only (no linkText)', async () => {
+    const linkData = {
+      url: 'https://www.smartsurvey.co.uk/s/EFO5FJ/',
+    };
+
+    await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(204);
+
+    // logLinkClick(request, url, linkText, linkType, currentPage)
+    expect(mockedLogLinkClick).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/api/analytics/link-click',
+      }),
+      linkData.url,
+      undefined, // linkText
+      undefined, // linkType
+      undefined // currentPage
+    );
+  });
+
+  it('returns 400 when url is missing', async () => {
+    const linkData = {
+      linkText: 'Some link text',
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: url is required' });
+    expect(mockedLogLinkClick).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when url is not a string', async () => {
+    const linkData = {
+      url: 12345,
+      linkText: 'Some link text',
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: url is required' });
+    expect(mockedLogLinkClick).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when url is an empty string', async () => {
+    const linkData = {
+      url: '',
+      linkText: 'Some link text',
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: url is required' });
+    expect(mockedLogLinkClick).not.toHaveBeenCalled();
+  });
+
+  it('handles requests with empty body', async () => {
+    const response = await request(app)
+      .post('/api/analytics/link-click')
+      .send({})
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: url is required' });
+    expect(mockedLogLinkClick).not.toHaveBeenCalled();
+  });
+
+  it('logs external gov.uk link', async () => {
+    const linkData = {
+      url: 'https://www.gov.uk/looking-after-children-divorce',
+      linkText: 'Looking after children when you divorce',
+    };
+
+    await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(204);
+
+    // logLinkClick(request, url, linkText, linkType, currentPage)
+    expect(mockedLogLinkClick).toHaveBeenCalledWith(
+      expect.anything(),
+      linkData.url,
+      linkData.linkText,
+      undefined, // linkType
+      undefined // currentPage
+    );
+  });
+
+  it('logs external survey link', async () => {
+    const linkData = {
+      url: 'https://www.smartsurvey.co.uk/s/EFO5FJ/',
+      linkText: 'Sign up for research',
+    };
+
+    await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(204);
+
+    // logLinkClick(request, url, linkText, linkType, currentPage)
+    expect(mockedLogLinkClick).toHaveBeenCalledWith(
+      expect.anything(),
+      linkData.url,
+      linkData.linkText,
+      undefined, // linkType
+      undefined // currentPage
+    );
+  });
+
+  it('logs link click with linkType and currentPage', async () => {
+    const linkData = {
+      url: 'https://www.gov.uk/looking-after-children-divorce',
+      linkText: 'More information and support',
+      linkType: 'external',
+      currentPage: '/share-plan',
+    };
+
+    await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(204);
+
+    expect(mockedLogLinkClick).toHaveBeenCalledWith(
+      expect.anything(),
+      linkData.url,
+      linkData.linkText,
+      linkData.linkType,
+      linkData.currentPage
+    );
+  });
+
+  it('logs internal link click', async () => {
+    const linkData = {
+      url: '/review',
+      linkText: 'Review your plan',
+      linkType: 'internal',
+      currentPage: '/create-plan',
+    };
+
+    await request(app)
+      .post('/api/analytics/link-click')
+      .send(linkData)
+      .expect(204);
+
+    expect(mockedLogLinkClick).toHaveBeenCalledWith(
+      expect.anything(),
+      linkData.url,
+      linkData.linkText,
+      linkData.linkType,
+      linkData.currentPage
+    );
+  });
+});
+
+describe('POST /api/analytics/page-exit', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('logs a page exit event with exitPage', async () => {
+    const exitData = {
+      exitPage: '/share-plan',
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/page-exit')
+      .send(exitData)
+      .expect(204);
+
+    expect(response.body).toEqual({});
+    // logPageExit(request, exitPage, destinationUrl)
+    expect(mockedLogPageExit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/api/analytics/page-exit',
+      }),
+      exitData.exitPage,
+      undefined // destinationUrl - not provided in this test
+    );
+  });
+
+  it('returns 400 when exitPage is missing', async () => {
+    const exitData = {};
+
+    const response = await request(app)
+      .post('/api/analytics/page-exit')
+      .send(exitData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: exitPage is required' });
+    expect(mockedLogPageExit).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when exitPage is not a string', async () => {
+    const exitData = {
+      exitPage: 12345,
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/page-exit')
+      .send(exitData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: exitPage is required' });
+    expect(mockedLogPageExit).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when exitPage is an empty string', async () => {
+    const exitData = {
+      exitPage: '',
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/page-exit')
+      .send(exitData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: exitPage is required' });
+    expect(mockedLogPageExit).not.toHaveBeenCalled();
+  });
+
+  it('logs page exit from confirmation page', async () => {
+    const exitData = {
+      exitPage: '/confirmation',
+    };
+
+    await request(app)
+      .post('/api/analytics/page-exit')
+      .send(exitData)
+      .expect(204);
+
+    // logPageExit(request, exitPage, destinationUrl)
+    expect(mockedLogPageExit).toHaveBeenCalledWith(
+      expect.anything(),
+      exitData.exitPage,
+      undefined // destinationUrl
+    );
+  });
+
+  it('logs page exit with destination URL', async () => {
+    const exitData = {
+      exitPage: '/share-plan',
+      destinationUrl: 'https://www.gov.uk',
+    };
+
+    await request(app)
+      .post('/api/analytics/page-exit')
+      .send(exitData)
+      .expect(204);
+
+    expect(mockedLogPageExit).toHaveBeenCalledWith(
+      expect.anything(),
+      exitData.exitPage,
+      exitData.destinationUrl
+    );
+  });
+});
+
+describe('POST /api/analytics/quick-exit', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('logs a quick exit event with exitPage', async () => {
+    const exitData = {
+      exitPage: '/safety-check',
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/quick-exit')
+      .send(exitData)
+      .expect(204);
+
+    expect(response.body).toEqual({});
+    expect(mockedLogQuickExit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/api/analytics/quick-exit',
+      }),
+      exitData.exitPage
+    );
+  });
+
+  it('returns 400 when exitPage is missing', async () => {
+    const exitData = {};
+
+    const response = await request(app)
+      .post('/api/analytics/quick-exit')
+      .send(exitData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: exitPage is required' });
+    expect(mockedLogQuickExit).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when exitPage is not a string', async () => {
+    const exitData = {
+      exitPage: 12345,
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/quick-exit')
+      .send(exitData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: exitPage is required' });
+    expect(mockedLogQuickExit).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when exitPage is an empty string', async () => {
+    const exitData = {
+      exitPage: '',
+    };
+
+    const response = await request(app)
+      .post('/api/analytics/quick-exit')
+      .send(exitData)
+      .expect(400);
+
+    expect(response.body).toEqual({ error: 'Invalid request: exitPage is required' });
+    expect(mockedLogQuickExit).not.toHaveBeenCalled();
+  });
+
+  it('logs quick exit from children safety check page', async () => {
+    const exitData = {
+      exitPage: '/children-safety-check',
+    };
+
+    await request(app)
+      .post('/api/analytics/quick-exit')
+      .send(exitData)
+      .expect(204);
+
+    expect(mockedLogQuickExit).toHaveBeenCalledWith(
+      expect.anything(),
+      exitData.exitPage
+    );
+  });
+});

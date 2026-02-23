@@ -1,0 +1,230 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{%
+  set completeStatus = {
+    text: __('taskList.completed')
+  }
+%}
+{%
+  set incompleteStatus = {
+  tag: {
+    text: __('taskList.incomplete'),
+    classes: "govuk-tag--blue"
+    }
+  }
+%}
+{%
+  set cannotStartStatus = {
+    text: __('taskList.cannotStart'),
+    classes: "govuk-task-list__status--cannot-start-yet"
+  }
+%}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      {# Design Toggle - Only show if more than one child #}
+      {% if showDesignToggle %}
+        <details class="govuk-details govuk-!-margin-bottom-6" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Change how you answer questions for different children
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">You have {{ numberOfChildren }} children. Choose how you want to provide answers:</p>
+
+            <form action="{{ paths.TOGGLE_DESIGN_MODE }}" method="post" class="govuk-!-margin-bottom-4">
+              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+              <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="design-mode-1" name="designMode" type="radio" value="design1" {{ "checked" if designMode == "design1" }}>
+                  <label class="govuk-label govuk-radios__label" for="design-mode-1">
+                    <strong>Design 1: Answer for all, then specify differences</strong>
+                    <span class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-0">Answer each question once, with the option to add different answers for specific children inline.</span>
+                  </label>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="design-mode-2" name="designMode" type="radio" value="design2" {{ "checked" if designMode == "design2" }}>
+                  <label class="govuk-label govuk-radios__label" for="design-mode-2">
+                    <strong>Design 2: Answer for each child separately</strong>
+                    <span class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-0">Complete the questions for each child one at a time. You can copy answers between children. Your final plan will include arrangements for all children.</span>
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-top-4">
+                Change design mode
+              </button>
+            </form>
+          </div>
+        </details>
+      {% endif %}
+
+      {# Design 2: Show current child heading #}
+      {% if isDesign2 %}
+        <h2 class="govuk-heading-m">Answering for {{ currentChildName }}</h2>
+      {% endif %}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.whoThePlanIsFor') }}</h2>
+      {{
+        govukTaskList({
+          idPrefix: 'whoThePlanIsFor-taskList',
+          items: [
+            {
+              title: {
+                text: __('taskList.theChildren')
+              },
+              href: paths.NUMBER_OF_CHILDREN,
+              status: completeStatus
+            },
+            {
+              title: {
+                text: __('taskList.whoIsUsing')
+              },
+              href: paths.ABOUT_THE_ADULTS,
+              status: completeStatus
+            }
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.livingAndVisiting') }}</h2>
+      {{
+        govukTaskList({
+          idPrefix: 'livingAndVisiting-taskList',
+          items: [
+            {
+              title: {
+                text: __('livingAndVisiting.mostlyLive.title')
+              },
+              href: paths.LIVING_VISITING_MOSTLY_LIVE,
+              status: completeStatus if mostlyLiveComplete else incompleteStatus
+            }
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.handoverAndHolidays') }}</h2>
+      {{
+        govukTaskList({
+          idPrefix: 'handoverAndHolidays-taskList',
+          items: [
+            {
+              title: {
+                text: __('handoverAndHolidays.getBetweenHouseholds.title')
+              },
+              href: paths.HANDOVER_HOLIDAYS_GET_BETWEEN_HOUSEHOLDS,
+              status: completeStatus if getBetweenHouseholdsComplete else incompleteStatus
+            },
+            {
+              title: {
+                text: __('handoverAndHolidays.whereHandover.title')
+              },
+              href: paths.HANDOVER_HOLIDAYS_WHERE_HANDOVER if getBetweenHouseholdsComplete else null,
+              status: completeStatus if whereHandoverComplete else (incompleteStatus if getBetweenHouseholdsComplete else cannotStartStatus)
+            },
+            {
+              title: {
+                text: __('handoverAndHolidays.willChangeDuringSchoolHolidays.title')
+              },
+              href: paths.HANDOVER_HOLIDAYS_WILL_CHANGE_DURING_SCHOOL_HOLIDAYS if whereHandoverComplete else null,
+              status: completeStatus if willChangeDuringSchoolHolidaysComplete else (incompleteStatus if whereHandoverComplete else cannotStartStatus)
+            },
+            {
+              title: {
+                text: __('handoverAndHolidays.itemsForChangeover.title')
+              },
+              href: paths.HANDOVER_HOLIDAYS_ITEMS_FOR_CHANGEOVER if willChangeDuringSchoolHolidaysComplete else null,
+              status: completeStatus if itemsForChangeoverComplete else (incompleteStatus if willChangeDuringSchoolHolidaysComplete else cannotStartStatus)
+            }
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.specialDays') }}</h2>
+      {{
+        govukTaskList({
+          idPrefix: 'specialDays-taskList',
+          items: [
+            {
+              title: {
+                text: __('specialDays.whatWillHappen.title')
+              },
+              href: paths.SPECIAL_DAYS_WHAT_WILL_HAPPEN,
+              status: completeStatus if whatWillHappenComplete else incompleteStatus
+            }
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.otherThings') }}</h2>
+      {{
+        govukTaskList({
+          idPrefix: 'otherThings-taskList',
+          items: [
+            {
+              title: {
+                text: __('otherThings.whatOtherThingsMatter.title')
+              },
+              href: paths.OTHER_THINGS_WHAT_OTHER_THINGS_MATTER,
+              status: completeStatus if whatOtherThingsMatterComplete else incompleteStatus
+            }
+          ]
+        })
+      }}
+
+      <h2 class="govuk-heading-m">{{ __('taskList.decisionMaking') }}</h2>
+      {{
+        govukTaskList({
+          idPrefix: 'decisionMaking-taskList',
+          items: [
+            {
+              title: {
+                text: __('decisionMaking.planLastMinuteChanges.title')
+              },
+              href: paths.DECISION_MAKING_PLAN_LAST_MINUTE_CHANGES,
+              status: completeStatus if planLastMinuteChangesComplete else incompleteStatus
+            },
+            {
+              title: {
+                text: __('decisionMaking.planLongTermNotice.title')
+              },
+              href: paths.DECISION_MAKING_PLAN_LONG_TERM_NOTICE if planLastMinuteChangesComplete else null,
+              status: completeStatus if planLongTermNoticeComplete else (incompleteStatus if planLastMinuteChangesComplete else cannotStartStatus)
+            },
+            {
+              title: {
+                text: __('decisionMaking.planReview.title')
+              },
+              href: paths.DECISION_MAKING_PLAN_REVIEW if planLongTermNoticeComplete else null,
+              status: completeStatus if planReviewComplete else (incompleteStatus if planLongTermNoticeComplete else cannotStartStatus)
+            }
+          ]
+        })
+      }}
+
+      {% if showContinue %}
+        <div class="govuk-!-margin-top-5">
+          {{ govukButton({text: __('continue'), href: paths.CHECK_YOUR_ANSWERS}) }}
+        </div>
+      {% endif %}
+
+      {# Design 2: Show prompt to complete other children #}
+      {% if isDesign2 and not allChildrenComplete %}
+        <div class="govuk-!-margin-top-6">
+          {{ govukInsetText({
+            text: "Remember to complete the arrangements for all your children before continuing."
+          }) }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

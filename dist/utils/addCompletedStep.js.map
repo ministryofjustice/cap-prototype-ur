@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/utils/addCompletedStep.ts"],
+  "sourcesContent": ["import { Request } from 'express';\n\n/**\n * Adds a step key to the session's completedSteps array only if it doesn't already exist.\n * @param req The Express Request object.\n * @param stepKey The key of the step that was just completed (e.g., 'step2').\n */\nfunction addCompletedStep(req: Request, stepKey: string): void {\n    if (!req.session.completedSteps) {\n        req.session.completedSteps = [];\n    }\n    \n    if (!req.session.completedSteps.includes(stepKey)) {\n        req.session.completedSteps.push(stepKey);\n    }\n}\n\nexport default addCompletedStep;"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAOA,SAAS,iBAAiB,KAAc,SAAuB;AAC3D,MAAI,CAAC,IAAI,QAAQ,gBAAgB;AAC7B,QAAI,QAAQ,iBAAiB,CAAC;AAAA,EAClC;AAEA,MAAI,CAAC,IAAI,QAAQ,eAAe,SAAS,OAAO,GAAG;AAC/C,QAAI,QAAQ,eAAe,KAAK,OAAO;AAAA,EAC3C;AACJ;AAEA,IAAO,2BAAQ;",
+  "names": []
+}

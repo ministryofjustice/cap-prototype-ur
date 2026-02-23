@@ -1,0 +1,13 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      <p>{{ __('existingCourtOrder.doNotUse') }}</p>
+      <p>{{ __('existingCourtOrder.getHelpChangingCourtOrder') | safe }}</p>
+    </div>
+  </div>
+{% endblock %}

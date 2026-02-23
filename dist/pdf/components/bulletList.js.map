@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/pdf/components/bulletList.ts"],
+  "sourcesContent": ["import { Paragraph } from '../../@types/pdf';\nimport { MAIN_TEXT_SIZE, PARAGRAPH_SPACE } from '../../constants/pdfConstants';\nimport FontStyles from '../fontStyles';\nimport Pdf from '../pdf';\n\nimport TextComponent from './text';\n\nclass BulletList extends TextComponent {\n  constructor(\n    pdf: Pdf,\n    {\n      initialText,\n      bulletText,\n      finalText,\n    }: { initialText?: Paragraph[]; bulletText: string[]; finalText?: Paragraph[] },\n  ) {\n    const paragraphs: Paragraph[] = initialText || [];\n\n    paragraphs.push({\n      text: bulletText.map((text) => `\u2022   ${text}`).join('\\n'),\n      size: MAIN_TEXT_SIZE,\n      style: FontStyles.NORMAL,\n      bottomPadding: PARAGRAPH_SPACE,\n    });\n\n    if (finalText) paragraphs.push(...finalText);\n    super(pdf, paragraphs);\n  }\n}\n\nexport default BulletList;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACA,0BAAgD;AAChD,wBAAuB;AAGvB,kBAA0B;AAE1B,MAAM,mBAAmB,YAAAA,QAAc;AAAA,EACrC,YACE,KACA;AAAA,IACE;AAAA,IACA;AAAA,IACA;AAAA,EACF,GACA;AACA,UAAM,aAA0B,eAAe,CAAC;AAEhD,eAAW,KAAK;AAAA,MACd,MAAM,WAAW,IAAI,CAAC,SAAS,YAAO,IAAI,EAAE,EAAE,KAAK,IAAI;AAAA,MACvD,MAAM;AAAA,MACN,OAAO,kBAAAC,QAAW;AAAA,MAClB,eAAe;AAAA,IACjB,CAAC;AAED,QAAI,UAAW,YAAW,KAAK,GAAG,SAAS;AAC3C,UAAM,KAAK,UAAU;AAAA,EACvB;AACF;AAEA,IAAO,qBAAQ;",
+  "names": ["TextComponent", "FontStyles"]
+}

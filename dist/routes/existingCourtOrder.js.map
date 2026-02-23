@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/routes/existingCourtOrder.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport FORM_STEPS from '../constants/formSteps';\nimport paths from '../constants/paths';\nimport checkFormProgressFromConfig  from '../middleware/checkFormProgressFromConfig';\n\nconst existingCourtOrderRoutes = (router: Router) => {\n  router.get(paths.EXISTING_COURT_ORDER, checkFormProgressFromConfig(FORM_STEPS.EXISTING_COURT_ORDER), (request, response) => {\n    response.render('pages/existingCourtOrder', {\n      title: request.__('existingCourtOrder.title'),\n    });\n  });\n};\n\nexport default existingCourtOrderRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,uBAAuB;AACvB,mBAAkB;AAClB,yCAAyC;AAEzC,MAAM,2BAA2B,CAAC,WAAmB;AACnD,SAAO,IAAI,aAAAA,QAAM,0BAAsB,mCAAAC,SAA4B,iBAAAC,QAAW,oBAAoB,GAAG,CAAC,SAAS,aAAa;AAC1H,aAAS,OAAO,4BAA4B;AAAA,MAC1C,OAAO,QAAQ,GAAG,0BAA0B;AAAA,IAC9C,CAAC;AAAA,EACH,CAAC;AACH;AAEA,IAAO,6BAAQ;",
+  "names": ["paths", "checkFormProgressFromConfig", "FORM_STEPS"]
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/constants/cookieNames.ts"],
+  "sourcesContent": ["enum cookieNames {\n  SESSION = 'pfl-care-arrangement-plan.session',\n  AUTHENTICATION = 'authentication',\n  ANALYTICS_CONSENT = 'cookie_policy',\n}\n\nexport default cookieNames;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,IAAK,cAAL,kBAAKA,iBAAL;AACE,EAAAA,aAAA,aAAU;AACV,EAAAA,aAAA,oBAAiB;AACjB,EAAAA,aAAA,uBAAoB;AAHjB,SAAAA;AAAA,GAAA;AAML,IAAO,sBAAQ;",
+  "names": ["cookieNames"]
+}

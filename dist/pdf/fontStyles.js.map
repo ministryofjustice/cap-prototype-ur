@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/pdf/fontStyles.ts"],
+  "sourcesContent": ["enum FontStyles {\n  NORMAL = 'normal',\n  BOLD = 'bold',\n}\n\nexport default FontStyles;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,IAAK,aAAL,kBAAKA,gBAAL;AACE,EAAAA,YAAA,YAAS;AACT,EAAAA,YAAA,UAAO;AAFJ,SAAAA;AAAA,GAAA;AAKL,IAAO,qBAAQ;",
+  "names": ["FontStyles"]
+}

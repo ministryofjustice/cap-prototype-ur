@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/html/addSpecialDays.ts"],
+  "sourcesContent": ["import { Request } from 'express';\n\nimport { whatWillHappen } from '../utils/formattedAnswersForPdf';\n\nimport addAnswer, { renderTextBox } from './addAnswer';\n\nconst addSpecialDays = (request: Request): string => {\n  const answer = whatWillHappen(request);\n\n  if (!answer) {\n    return '';\n  }\n\n  let html = '<section id=\"special-days\" aria-labelledby=\"special-days-heading\">\\n';\n  html += addAnswer(\n    request.__('taskList.specialDays'),\n    request.__('specialDays.whatWillHappen.title'),\n    request.__('specialDays.whatWillHappen.content'),\n    answer,\n    request.__('sharePlan.yourProposedPlan.doNotAgree.specialDays.whatWillHappen'),\n    request,\n  );\n  html += renderTextBox(\n    request.__('sharePlan.yourProposedPlan.endOfSection'),\n    request.__('sharePlan.yourProposedPlan.compromise.specialDays'),\n  );\n  html += '</section>\\n\\n';\n\n  return html;\n};\n\nexport default addSpecialDays;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,oCAA+B;AAE/B,uBAAyC;AAEzC,MAAM,iBAAiB,CAAC,YAA6B;AACnD,QAAM,aAAS,8CAAe,OAAO;AAErC,MAAI,CAAC,QAAQ;AACX,WAAO;AAAA,EACT;AAEA,MAAI,OAAO;AACX,cAAQ,iBAAAA;AAAA,IACN,QAAQ,GAAG,sBAAsB;AAAA,IACjC,QAAQ,GAAG,kCAAkC;AAAA,IAC7C,QAAQ,GAAG,oCAAoC;AAAA,IAC/C;AAAA,IACA,QAAQ,GAAG,kEAAkE;AAAA,IAC7E;AAAA,EACF;AACA,cAAQ;AAAA,IACN,QAAQ,GAAG,yCAAyC;AAAA,IACpD,QAAQ,GAAG,mDAAmD;AAAA,EAChE;AACA,UAAQ;AAER,SAAO;AACT;AAEA,IAAO,yBAAQ;",
+  "names": ["addAnswer"]
+}

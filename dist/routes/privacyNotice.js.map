@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/routes/privacyNotice.ts"],
+  "sourcesContent": ["import type { Router } from 'express-serve-static-core';\n\nimport paths from '../constants/paths';\nimport { getBackUrl } from '../utils/sessionHelpers';\n\nconst privacyNoticeRoutes = (router: Router) => {\n  router.get(paths.PRIVACY_NOTICE, (request, response) => {\n    response.render('pages/privacyNotice', {\n      title: request.__('privacyNotice.title'),\n      backLinkHref: getBackUrl(request.session, paths.START),\n    });\n  });\n};\n\nexport default privacyNoticeRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,mBAAkB;AAClB,4BAA2B;AAE3B,MAAM,sBAAsB,CAAC,WAAmB;AAC9C,SAAO,IAAI,aAAAA,QAAM,gBAAgB,CAAC,SAAS,aAAa;AACtD,aAAS,OAAO,uBAAuB;AAAA,MACrC,OAAO,QAAQ,GAAG,qBAAqB;AAAA,MACvC,kBAAc,kCAAW,QAAQ,SAAS,aAAAA,QAAM,KAAK;AAAA,IACvD,CAAC;AAAA,EACH,CAAC;AACH;AAEA,IAAO,wBAAQ;",
+  "names": ["paths"]
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/routes/specialDays/index.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport whatWillHappenRoutes from './whatWillHappen';\n\nconst specialDaysRoutes = (router: Router) => {\n  whatWillHappenRoutes(router);\n};\n\nexport default specialDaysRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,4BAAiC;AAEjC,MAAM,oBAAoB,CAAC,WAAmB;AAC5C,4BAAAA,SAAqB,MAAM;AAC7B;AAEA,IAAO,sBAAQ;",
+  "names": ["whatWillHappenRoutes"]
+}

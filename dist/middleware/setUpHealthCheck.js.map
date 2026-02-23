@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/middleware/setUpHealthCheck.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport config from '../config';\n\nconst { buildNumber, gitRef, gitBranch } = config;\n\nconst setUpHealthCheck = (): Router => {\n  const router = Router();\n\n  router.get('/health', (_, response, _next) => {\n    response.json({\n      gitHash: gitRef,\n      branch: gitBranch,\n      version: buildNumber,\n      uptime: Math.floor(process.uptime()),\n    });\n  });\n  return router;\n};\n\nexport default setUpHealthCheck;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAuB;AAEvB,oBAAmB;AAEnB,MAAM,EAAE,aAAa,QAAQ,UAAU,IAAI,cAAAA;AAE3C,MAAM,mBAAmB,MAAc;AACrC,QAAM,aAAS,uBAAO;AAEtB,SAAO,IAAI,WAAW,CAAC,GAAG,UAAU,UAAU;AAC5C,aAAS,KAAK;AAAA,MACZ,SAAS;AAAA,MACT,QAAQ;AAAA,MACR,SAAS;AAAA,MACT,QAAQ,KAAK,MAAM,QAAQ,OAAO,CAAC;AAAA,IACrC,CAAC;AAAA,EACH,CAAC;AACD,SAAO;AACT;AAEA,IAAO,2BAAQ;",
+  "names": ["config"]
+}

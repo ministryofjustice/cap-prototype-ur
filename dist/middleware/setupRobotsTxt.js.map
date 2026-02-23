@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/middleware/setupRobotsTxt.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nconst setupRobotsTxt = (): Router => {\n  const router = Router();\n\n  router.use('/robots.txt', (request, response) => {\n    response.type('text/plain');\n    // Disallow all web crawlers from indexing the site\n    response.send('User-Agent: *\\nDisallow: /\\n');\n  });\n  return router;\n};\n\nexport default setupRobotsTxt;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,qBAAuB;AAEvB,MAAM,iBAAiB,MAAc;AACnC,QAAM,aAAS,uBAAO;AAEtB,SAAO,IAAI,eAAe,CAAC,SAAS,aAAa;AAC/C,aAAS,KAAK,YAAY;AAE1B,aAAS,KAAK,8BAA8B;AAAA,EAC9C,CAAC;AACD,SAAO;AACT;AAEA,IAAO,yBAAQ;",
+  "names": []
+}

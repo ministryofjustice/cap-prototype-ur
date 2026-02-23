@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/routes/accessibilityStatement.ts"],
+  "sourcesContent": ["import type { Router } from 'express-serve-static-core';\n\nimport paths from '../constants/paths';\nimport { getBackUrl } from '../utils/sessionHelpers';\n\nconst accessibilityStatementRoutes = (router: Router) => {\n  router.get(paths.ACCESSIBILITY_STATEMENT, (request, response) => {\n    response.render('pages/accessibilityStatement', {\n      title: request.__('accessibilityStatement.title'),\n      backLinkHref: getBackUrl(request.session, paths.START),\n    });\n  });\n  \n};\n\nexport default accessibilityStatementRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,mBAAkB;AAClB,4BAA2B;AAE3B,MAAM,+BAA+B,CAAC,WAAmB;AACvD,SAAO,IAAI,aAAAA,QAAM,yBAAyB,CAAC,SAAS,aAAa;AAC/D,aAAS,OAAO,gCAAgC;AAAA,MAC9C,OAAO,QAAQ,GAAG,8BAA8B;AAAA,MAChD,kBAAc,kCAAW,QAAQ,SAAS,aAAAA,QAAM,KAAK;AAAA,IACvD,CAAC;AAAA,EACH,CAAC;AAEH;AAEA,IAAO,iCAAQ;",
+  "names": ["paths"]
+}

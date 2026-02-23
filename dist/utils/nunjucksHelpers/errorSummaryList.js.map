@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/utils/nunjucksHelpers/errorSummaryList.ts"],
+  "sourcesContent": ["// convert errors to format for GOV.UK error summary component\nimport { FieldValidationError } from 'express-validator';\n\nconst errorSummaryList = (errors: FieldValidationError[] = []) => {\n  return errors.map((error) => {\n    return {\n      text: error.msg,\n      href: error.path ? `#${error.path}-error` : undefined,\n    };\n  });\n};\n\nexport default errorSummaryList;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAGA,MAAM,mBAAmB,CAAC,SAAiC,CAAC,MAAM;AAChE,SAAO,OAAO,IAAI,CAAC,UAAU;AAC3B,WAAO;AAAA,MACL,MAAM,MAAM;AAAA,MACZ,MAAM,MAAM,OAAO,IAAI,MAAM,IAAI,WAAW;AAAA,IAC9C;AAAA,EACF,CAAC;AACH;AAEA,IAAO,2BAAQ;",
+  "names": []
+}

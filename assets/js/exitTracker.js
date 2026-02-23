@@ -1,0 +1,113 @@
+const setupExitTracking = () => {
+  if (window.analyticsEnvironmentEnabled === false) {
+    return;
+  }
+
+  let hasLoggedPageExit = false;
+  let isFormSubmitting = false;
+  let isInternalNavigation = false;
+  let isDownloading = false;
+  let isExternalNavigation = false;
+
+  function sendAnalyticsEvent(endpoint, data) {
+    if (navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      navigator.sendBeacon(endpoint, blob);
+    } else {
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        keepalive: true,
+      }).catch(() => {});
+    }
+  }
+
+  function logPageExit(destination) {
+    if (hasLoggedPageExit || isFormSubmitting || isInternalNavigation || isDownloading) {
+      return;
+    }
+    hasLoggedPageExit = true;
+
+    const eventData = { exitPage: window.location.pathname };
+    if (destination) {
+      eventData.destinationUrl = destination;
+    }
+
+    sendAnalyticsEvent('/api/analytics/page-exit', eventData);
+  }
+
+  function logQuickExit() {
+    sendAnalyticsEvent('/api/analytics/quick-exit', { exitPage: window.location.pathname });
+  }
+
+  document.addEventListener('submit', () => {
+    isFormSubmitting = true;
+  });
+
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href]');
+    const isNavigatingAway = link
+      && link.hostname === window.location.hostname
+      && !link.hasAttribute('download')
+      && link.target !== '_blank'
+      && !link.pathname.startsWith('/download')
+      && link.pathname !== window.location.pathname;
+
+    if (isNavigatingAway) {
+      isInternalNavigation = true;
+    }
+
+    if (link && link.hostname !== window.location.hostname) {
+      isExternalNavigation = true;
+    }
+
+    const staysOnPage = link && (
+      link.hasAttribute('download')
+      || link.pathname.startsWith('/download')
+      || link.target === '_blank'
+    );
+
+    if (staysOnPage) {
+      isDownloading = true;
+      setTimeout(() => { isDownloading = false; }, 1000);
+    }
+
+    const exitButton = event.target.closest('.govuk-exit-this-page__button');
+    if (exitButton) {
+      logQuickExit();
+    }
+  });
+
+  window.addEventListener('pagehide', (event) => {
+    if (!event.persisted || isExternalNavigation) {
+      logPageExit();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) {
+      return;
+    }
+
+    const exitButton = document.querySelector('.govuk-exit-this-page__button');
+    if (!exitButton) {
+      return;
+    }
+
+    const activeElement = document.activeElement;
+    const isInputField =
+      activeElement &&
+      (activeElement.tagName === 'INPUT' ||
+        activeElement.tagName === 'TEXTAREA' ||
+        activeElement.tagName === 'SELECT' ||
+        activeElement.isContentEditable);
+    const isInDialog = activeElement && activeElement.closest('[role="dialog"]');
+
+    if (!isInputField && !isInDialog) {
+      logQuickExit();
+    }
+  });
+};
+
+export default setupExitTracking;

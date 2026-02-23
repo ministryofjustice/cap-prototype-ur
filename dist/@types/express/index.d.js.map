@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/@types/express/index.d.ts"],
+  "sourcesContent": ["import { CAPSession } from '../session';\n\nexport declare module 'express-session' {\n  // Declare that the session.d.ts will potentially contain these additional fields\n  interface SessionData extends CAPSession {\n    nowInMinutes: number;\n    pageHistory: string[];\n    previousPage: string;\n    lang: string;\n  }\n}\n\nexport declare global {\n  namespace Express {\n    interface Request {\n      flash(type: 'errors'): ValidationError[];\n      flash(type: 'errors', message: ValidationError[]): number;\n      flash(type: 'formValues'): Record<string, string | string[] | number[]>[];\n      flash(type: 'formValues', message: Record<string, string | string[] | number[]>): number;\n    }\n\n    interface Locals {\n      analyticsEnabled?: boolean;\n      ga4Id?: string;\n    }\n  }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

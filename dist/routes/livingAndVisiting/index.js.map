@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../server/routes/livingAndVisiting/index.ts"],
+  "sourcesContent": ["import { Router } from 'express';\n\nimport mostlyLiveRoutes from './mostlyLive';\nimport whichDaysDaytimeVisitsRoutes from './whichDaysDaytimeVisits';\nimport whichDaysOvernightRoutes from './whichDaysOvernight';\nimport whichScheduleRoutes from './whichSchedule';\nimport willDaytimeVisitsHappenRoutes from './willDaytimeVisitsHappen';\nimport willOvernightsHappenRoutes from './willOvernightsHappen';\n\nconst livingAndVisitingRoutes = (router: Router) => {\n  mostlyLiveRoutes(router);\n  whichScheduleRoutes(router);\n  willOvernightsHappenRoutes(router);\n  whichDaysOvernightRoutes(router);\n  willDaytimeVisitsHappenRoutes(router);\n  whichDaysDaytimeVisitsRoutes(router);\n};\n\nexport default livingAndVisitingRoutes;\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEA,wBAA6B;AAC7B,oCAAyC;AACzC,gCAAqC;AACrC,2BAAgC;AAChC,qCAA0C;AAC1C,kCAAuC;AAEvC,MAAM,0BAA0B,CAAC,WAAmB;AAClD,wBAAAA,SAAiB,MAAM;AACvB,2BAAAC,SAAoB,MAAM;AAC1B,kCAAAC,SAA2B,MAAM;AACjC,gCAAAC,SAAyB,MAAM;AAC/B,qCAAAC,SAA8B,MAAM;AACpC,oCAAAC,SAA6B,MAAM;AACrC;AAEA,IAAO,4BAAQ;",
+  "names": ["mostlyLiveRoutes", "whichScheduleRoutes", "willOvernightsHappenRoutes", "whichDaysOvernightRoutes", "willDaytimeVisitsHappenRoutes", "whichDaysDaytimeVisitsRoutes"]
+}

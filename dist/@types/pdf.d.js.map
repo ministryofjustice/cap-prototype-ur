@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/@types/pdf.d.ts"],
+  "sourcesContent": ["export type Text = {\n  text: string;\n  size: number;\n  style: FontStyles;\n};\n\nexport type Paragraph = Text & {\n  bottomPadding: number;\n  urlize?: boolean;\n};\n"],
+  "mappings": ";;;;;;;;;;;;;AAAA;AAAA;",
+  "names": []
+}

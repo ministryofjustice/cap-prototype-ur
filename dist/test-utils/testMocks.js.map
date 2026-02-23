@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../server/test-utils/testMocks.ts"],
+  "sourcesContent": ["import { NextFunction, Request, Response } from 'express';\nimport { Session, SessionData } from 'express-session';\nimport { ValidationError } from 'express-validator';\n\nexport const loggerMocks = {\n  debug: jest.fn(),\n  info: jest.fn(),\n  warn: jest.fn(),\n  error: jest.fn(),\n  fatal: jest.fn(),\n};\n\nexport const flashMockErrors: ValidationError[] = [];\nexport const flashFormValues: Record<string, string | string[] | number[]>[] = [];\n\nexport const flashMock = jest\n  .fn()\n  .mockImplementation((type: 'errors' | 'formValues') => (type === 'errors' ? flashMockErrors : flashFormValues));\n\nexport const sessionMock = {} as Session & Partial<SessionData>;\n\nexport const mockNow = new Date('2025-01-01T00:00:00Z');\n\nexport const mockCheckFormProgressFromConfig = jest.fn().mockImplementation(() => (_req: Request, _res: Response, next: NextFunction) => next());\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAIO,MAAM,cAAc;AAAA,EACzB,OAAO,KAAK,GAAG;AAAA,EACf,MAAM,KAAK,GAAG;AAAA,EACd,MAAM,KAAK,GAAG;AAAA,EACd,OAAO,KAAK,GAAG;AAAA,EACf,OAAO,KAAK,GAAG;AACjB;AAEO,MAAM,kBAAqC,CAAC;AAC5C,MAAM,kBAAkE,CAAC;AAEzE,MAAM,YAAY,KACtB,GAAG,EACH,mBAAmB,CAAC,SAAmC,SAAS,WAAW,kBAAkB,eAAgB;AAEzG,MAAM,cAAc,CAAC;AAErB,MAAM,UAAU,oBAAI,KAAK,sBAAsB;AAE/C,MAAM,kCAAkC,KAAK,GAAG,EAAE,mBAAmB,MAAM,CAAC,MAAe,MAAgB,SAAuB,KAAK,CAAC;",
+  "names": []
+}
