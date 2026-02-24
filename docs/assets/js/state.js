@@ -178,3 +178,28 @@ function isD3QuestionComplete(qKey) {
   const { children } = getNames();
   return children.length > 0 && children.every((_, i) => !!(q.perChildAnswers || [])[i]);
 }
+
+// ─── Design 1 helpers ────────────────────────────────────────────────────────
+
+function getDesign1() {
+  const s = getState();
+  return s.design1 || {};
+}
+
+function setDesign1(updates) {
+  const d1 = getDesign1();
+  setState({ design1: deepMerge(d1, updates) });
+}
+
+function getD1Question(qKey) {
+  return getDesign1()[qKey] || {};
+}
+
+function setD1Question(qKey, data) {
+  setDesign1({ [qKey]: data });
+}
+
+function isD1QuestionComplete(qKey) {
+  const q = getD1Question(qKey);
+  return !!q.allAnswer;
+}

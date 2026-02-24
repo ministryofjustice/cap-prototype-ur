@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Parents' names – Handover and holidays prototype</title>
   <link rel="stylesheet" href="assets/govuk-frontend.min.css">
+  <link rel="prefetch" href="design1/get-between-households.html">
   <link rel="prefetch" href="design2/task-list.html">
   <link rel="prefetch" href="design3/get-between-households.html">
 </head>
@@ -132,6 +133,7 @@
         parent1Name: parent1,
         parent2Name: parent2,
         children: children,
+        design1: {},
         design2: { childPlans: children.map(function() { return { answers: {} }; }), currentChildIndex: 0 },
         design3: {}
       });
@@ -139,7 +141,9 @@
       sessionStorage.removeItem('cap-hh-temp-children');
       sessionStorage.removeItem('cap-hh-temp-design');
 
-      if (design === '2') {
+      if (design === '1') {
+        window.location.href = 'design1/get-between-households.html';
+      } else if (design === '2') {
         window.location.href = 'design2/task-list.html';
       } else {
         window.location.href = 'design3/get-between-households.html';

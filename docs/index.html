@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="assets/govuk-frontend.min.css">
   <link rel="prefetch" href="children.html">
   <link rel="prefetch" href="password.html">
+  <link rel="prefetch" href="design1/get-between-households.html">
 </head>
 <body class="govuk-template__body">
   <script>document.body.classList.add('govuk-frontend-supported')</script>
@@ -47,20 +48,22 @@
 
           <h1 class="govuk-heading-xl">Handover and holidays prototype</h1>
           <p class="govuk-body-l">Choose a design to explore the handover and holidays questions.</p>
-          <p class="govuk-body">Both designs cover the same questions about handovers and holidays. You'll be asked for some names before you start.</p>
+          <p class="govuk-body">All designs cover the same questions about handovers and holidays. You'll be asked for some names before you start.</p>
 
           <details class="govuk-details">
             <summary class="govuk-details__summary">
               <span class="govuk-details__summary-text">What's the difference?</span>
             </summary>
             <div class="govuk-details__text">
+              <p class="govuk-body"><strong>Design 1</strong> — Dropdown approach. You answer each question once for all children. A button lets you add a different answer for a specific child using a dropdown.</p>
               <p class="govuk-body"><strong>Design 2</strong> — Task list approach. Each question is a separate task. You answer it for each child in turn — or tick a box to apply the same answer to all children at once.</p>
               <p class="govuk-body"><strong>Design 3</strong> — Answer-once approach. You answer each question once, covering all children. On any question, you can switch to giving each child a separate answer instead.</p>
             </div>
           </details>
 
           <div class="govuk-button-group govuk-!-margin-top-4">
-            <button type="button" class="govuk-button" id="design2-btn">Start Design 2</button>
+            <button type="button" class="govuk-button" id="design1-btn">Start Design 1</button>
+            <button type="button" class="govuk-button govuk-button--secondary" id="design2-btn">Start Design 2</button>
             <button type="button" class="govuk-button govuk-button--secondary" id="design3-btn">Start Design 3</button>
           </div>
 
@@ -86,6 +89,10 @@
   <script src="assets/all.bundle.js" defer></script>
   <script>document.addEventListener('DOMContentLoaded', function() { window.GOVUKFrontend.initAll(); });</script>
   <script>
+    document.getElementById('design1-btn').addEventListener('click', function() {
+      sessionStorage.setItem('cap-hh-temp-design', '1');
+      window.location.href = 'children.html?design=1';
+    });
     document.getElementById('design2-btn').addEventListener('click', function() {
       sessionStorage.setItem('cap-hh-temp-design', '2');
       window.location.href = 'children.html?design=2';
