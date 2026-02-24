@@ -48,13 +48,15 @@
             </h1>
             <div class="govuk-hint">School holidays include half terms, bank holidays and inset days.</div>
 
-            <p class="govuk-label govuk-!-font-weight-bold" id="all-children-label" style="display:none;">For all children:</p>
+            <div id="all-children-answer" style="display:none;">
+            <p class="govuk-label govuk-!-font-weight-bold" id="all-children-label">For all children:</p>
 
             <div id="textarea-error" class="govuk-error-message" style="display:none;">
               <span class="govuk-visually-hidden">Error:</span>
               Enter details of how the arrangements will be different in school holidays
             </div>
             <textarea class="govuk-textarea" id="how-change-text" name="how-change-text" rows="5"></textarea>
+            </div>
           </div>
 
           <div id="per-child-entries"></div>
@@ -106,13 +108,22 @@
   var children = names.children || [];
   var childCount = children.length;
 
-  if (childCount >= 2) {
-    document.getElementById('all-children-label').style.display = '';
-    document.getElementById('add-child-btn-container').style.display = '';
-  }
-
   var entryCounter = 1;
   var entriesContainer = document.getElementById('per-child-entries');
+
+  function updatePageState() {
+    var entries = entriesContainer.querySelectorAll('.per-child-entry');
+    var count = entries.length;
+    if (childCount < 2) return;
+    var label = document.getElementById('all-children-label');
+    var allChildrenAnswer = document.getElementById('all-children-answer');
+    var addBtnContainer = document.getElementById('add-child-btn-container');
+    var allCovered = count >= childCount;
+    if (label) label.textContent = count > 0 ? 'For all other children:' : 'For all children:';
+    if (allChildrenAnswer) allChildrenAnswer.style.display = allCovered ? 'none' : '';
+    if (addBtnContainer) addBtnContainer.style.display = allCovered ? 'none' : '';
+  }
+  updatePageState();
 
   function buildChildOptions(selectedIdx) {
     var opts = '<option value="">Select a child</option>';
@@ -141,12 +152,14 @@
         '<label class="govuk-label" for="how-change-text-' + n + '">How will arrangements be different for this child in school holidays?</label>' +
         '<textarea class="govuk-textarea" id="how-change-text-' + n + '" name="how-change-text-' + n + '" rows="5">' + savedText + '</textarea>' +
       '</div>' +
-      '<button type="button" class="govuk-button govuk-button--warning govuk-!-margin-bottom-4 remove-entry-btn">Remove</button>';
+      '<button type="button" class="govuk-button govuk-button--warning govuk-!-margin-top-4 govuk-!-margin-bottom-4 remove-entry-btn">Remove</button>';
 
     entriesContainer.appendChild(div);
+    updatePageState();
 
     div.querySelector('.remove-entry-btn').addEventListener('click', function () {
       entriesContainer.removeChild(div);
+      updatePageState();
     });
 
     if (window.GOVUKFrontend && window.GOVUKFrontend.initAll) {

@@ -51,7 +51,8 @@
               <div class="govuk-hint">It may be easier for children if the handover takes place at a neutral location such as a park or railway station.</div>
               <div class="govuk-hint">Select all that apply.</div>
 
-              <p class="govuk-label govuk-!-font-weight-bold" id="all-children-label" style="display:none;">For all children:</p>
+              <div id="all-children-answer" style="display:none;">
+              <p class="govuk-label govuk-!-font-weight-bold" id="all-children-label">For all children:</p>
 
               <div id="checkbox-error" class="govuk-error-message" style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span>
@@ -89,6 +90,7 @@
                     <input class="govuk-input" id="someone-else-text" name="someone-else-text" type="text">
                   </div>
                 </div>
+              </div>
               </div>
             </fieldset>
           </div>
@@ -147,13 +149,22 @@
   document.getElementById('label-parent1Home').textContent = 'At ' + escHtml(parent1Name) + '\u2019s home';
   document.getElementById('label-parent2Home').textContent = 'At ' + escHtml(parent2Name) + '\u2019s home';
 
-  if (childCount >= 2) {
-    document.getElementById('all-children-label').style.display = '';
-    document.getElementById('add-child-btn-container').style.display = '';
-  }
-
   var entryCounter = 1;
   var entriesContainer = document.getElementById('per-child-entries');
+
+  function updatePageState() {
+    var entries = entriesContainer.querySelectorAll('.per-child-entry');
+    var count = entries.length;
+    if (childCount < 2) return;
+    var label = document.getElementById('all-children-label');
+    var allChildrenAnswer = document.getElementById('all-children-answer');
+    var addBtnContainer = document.getElementById('add-child-btn-container');
+    var allCovered = count >= childCount;
+    if (label) label.textContent = count > 0 ? 'For all other children:' : 'For all children:';
+    if (allChildrenAnswer) allChildrenAnswer.style.display = allCovered ? 'none' : '';
+    if (addBtnContainer) addBtnContainer.style.display = allCovered ? 'none' : '';
+  }
+  updatePageState();
 
   function buildChildOptions(selectedIdx) {
     var opts = '<option value="">Select a child</option>';
@@ -216,12 +227,14 @@
         '</select>' +
       '</div>' +
       buildCheckboxesForEntry(n, savedAnswer) +
-      '<button type="button" class="govuk-button govuk-button--warning govuk-!-margin-bottom-4 remove-entry-btn">Remove</button>';
+      '<button type="button" class="govuk-button govuk-button--warning govuk-!-margin-top-4 govuk-!-margin-bottom-4 remove-entry-btn">Remove</button>';
 
     entriesContainer.appendChild(div);
+    updatePageState();
 
     div.querySelector('.remove-entry-btn').addEventListener('click', function () {
       entriesContainer.removeChild(div);
+      updatePageState();
     });
 
     if (window.GOVUKFrontend && window.GOVUKFrontend.initAll) {

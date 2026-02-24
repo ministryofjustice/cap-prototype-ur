@@ -49,7 +49,8 @@
                 </h1>
               </legend>
 
-              <p class="govuk-label govuk-!-font-weight-bold" id="all-children-label" style="display:none;">For all children:</p>
+              <div id="all-children-answer" style="display:none;">
+              <p class="govuk-label govuk-!-font-weight-bold" id="all-children-label">For all children:</p>
 
               <div id="radio-error" class="govuk-error-message" style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span>
@@ -65,6 +66,7 @@
                   <input class="govuk-radios__input" id="willChange-no" name="willChangeDuringHolidays" type="radio" value="No">
                   <label class="govuk-label govuk-radios__label" for="willChange-no">No</label>
                 </div>
+              </div>
               </div>
             </fieldset>
           </div>
@@ -118,13 +120,22 @@
   var children = names.children || [];
   var childCount = children.length;
 
-  if (childCount >= 2) {
-    document.getElementById('all-children-label').style.display = '';
-    document.getElementById('add-child-btn-container').style.display = '';
-  }
-
   var entryCounter = 1;
   var entriesContainer = document.getElementById('per-child-entries');
+
+  function updatePageState() {
+    var entries = entriesContainer.querySelectorAll('.per-child-entry');
+    var count = entries.length;
+    if (childCount < 2) return;
+    var label = document.getElementById('all-children-label');
+    var allChildrenAnswer = document.getElementById('all-children-answer');
+    var addBtnContainer = document.getElementById('add-child-btn-container');
+    var allCovered = count >= childCount;
+    if (label) label.textContent = count > 0 ? 'For all other children:' : 'For all children:';
+    if (allChildrenAnswer) allChildrenAnswer.style.display = allCovered ? 'none' : '';
+    if (addBtnContainer) addBtnContainer.style.display = allCovered ? 'none' : '';
+  }
+  updatePageState();
 
   function buildChildOptions(selectedIdx) {
     var opts = '<option value="">Select a child</option>';
@@ -164,12 +175,14 @@
         '</select>' +
       '</div>' +
       buildRadiosForEntry(n, savedAnswer) +
-      '<button type="button" class="govuk-button govuk-button--warning govuk-!-margin-bottom-4 remove-entry-btn">Remove</button>';
+      '<button type="button" class="govuk-button govuk-button--warning govuk-!-margin-top-4 govuk-!-margin-bottom-4 remove-entry-btn">Remove</button>';
 
     entriesContainer.appendChild(div);
+    updatePageState();
 
     div.querySelector('.remove-entry-btn').addEventListener('click', function () {
       entriesContainer.removeChild(div);
+      updatePageState();
     });
 
     if (window.GOVUKFrontend && window.GOVUKFrontend.initAll) {
