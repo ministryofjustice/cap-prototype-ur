@@ -50,22 +50,36 @@
           <p class="govuk-body-l">Choose a design to explore the handover and holidays questions.</p>
           <p class="govuk-body">All designs cover the same questions about handovers and holidays. You'll be asked for some names before you start.</p>
 
-          <details class="govuk-details">
-            <summary class="govuk-details__summary">
-              <span class="govuk-details__summary-text">What's the difference?</span>
-            </summary>
-            <div class="govuk-details__text">
-              <p class="govuk-body"><strong>Design 1</strong> — Dropdown approach. You answer each question once for all children. A button lets you add a different answer for a specific child using a dropdown.</p>
-              <p class="govuk-body"><strong>Design 2</strong> — Task list approach. Each question is a separate task. You answer it for each child in turn — or tick a box to apply the same answer to all children at once.</p>
-              <p class="govuk-body"><strong>Design 3</strong> — Answer-once approach. You answer each question once, covering all children. On any question, you can switch to giving each child a separate answer instead.</p>
-            </div>
-          </details>
-
-          <div class="govuk-button-group govuk-!-margin-top-4">
-            <button type="button" class="govuk-button" id="design1-btn">Start Design 1</button>
-            <button type="button" class="govuk-button govuk-button--secondary" id="design2-btn">Start Design 2</button>
-            <button type="button" class="govuk-button govuk-button--secondary" id="design3-btn">Start Design 3</button>
+          <div class="govuk-form-group" id="design-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                Which design would you like to try?
+              </legend>
+              <div id="design-error" class="govuk-error-message" style="display:none;">
+                <span class="govuk-visually-hidden">Error:</span>
+                Select a design to continue
+              </div>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="design-1" name="design" type="radio" value="1">
+                  <label class="govuk-label govuk-radios__label" for="design-1">Design 1</label>
+                  <div class="govuk-hint govuk-radios__hint">You answer each question once for all children. A button lets you add a different answer for a specific child using a dropdown.</div>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="design-2" name="design" type="radio" value="2">
+                  <label class="govuk-label govuk-radios__label" for="design-2">Design 2</label>
+                  <div class="govuk-hint govuk-radios__hint">Each question is a separate task. You answer it for each child in turn — or tick a box to apply the same answer to all children at once.</div>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="design-3" name="design" type="radio" value="3">
+                  <label class="govuk-label govuk-radios__label" for="design-3">Design 3</label>
+                  <div class="govuk-hint govuk-radios__hint">You answer each question once, covering all children. On any question, you can switch to giving each child a separate answer instead.</div>
+                </div>
+              </div>
+            </fieldset>
           </div>
+
+          <button type="button" class="govuk-button" id="start-btn">Start</button>
 
         </div>
       </div>
@@ -89,17 +103,20 @@
   <script src="assets/all.bundle.js" defer></script>
   <script>document.addEventListener('DOMContentLoaded', function() { window.GOVUKFrontend.initAll(); });</script>
   <script>
-    document.getElementById('design1-btn').addEventListener('click', function() {
-      sessionStorage.setItem('cap-hh-temp-design', '1');
-      window.location.href = 'children.html?design=1';
-    });
-    document.getElementById('design2-btn').addEventListener('click', function() {
-      sessionStorage.setItem('cap-hh-temp-design', '2');
-      window.location.href = 'children.html?design=2';
-    });
-    document.getElementById('design3-btn').addEventListener('click', function() {
-      sessionStorage.setItem('cap-hh-temp-design', '3');
-      window.location.href = 'children.html?design=3';
+    document.getElementById('start-btn').addEventListener('click', function() {
+      var selected = document.querySelector('input[name="design"]:checked');
+      var formGroup = document.getElementById('design-form-group');
+      var errorMsg = document.getElementById('design-error');
+      formGroup.classList.remove('govuk-form-group--error');
+      errorMsg.style.display = 'none';
+      if (!selected) {
+        formGroup.classList.add('govuk-form-group--error');
+        errorMsg.style.display = '';
+        return;
+      }
+      var design = selected.value;
+      sessionStorage.setItem('cap-hh-temp-design', design);
+      window.location.href = 'children.html?design=' + design;
     });
   </script>
 </body>
