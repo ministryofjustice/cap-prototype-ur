@@ -129,13 +129,12 @@
         return;
       }
 
+      clearState();
       setState({
         parent1Name: parent1,
         parent2Name: parent2,
         children: children,
-        design1: {},
-        design2: { childPlans: children.map(function() { return { answers: {} }; }), currentChildIndex: 0 },
-        design3: {}
+        design2: { childPlans: children.map(function() { return { answers: {} }; }), currentChildIndex: 0 }
       });
 
       sessionStorage.removeItem('cap-hh-temp-children');
