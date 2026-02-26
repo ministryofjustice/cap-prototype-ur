@@ -53,7 +53,7 @@ jobs:
     needs: [deploy_development]
     with:
       environment: development
-      base_url: 'https://care-arrangement-plan-dev.apps.live.cloud-platform.service.justice.gov.uk'
+      base_url: 'https://care-arrangement-plan-prototype-dev.apps.live.cloud-platform.service.justice.gov.uk'
     secrets: inherit
 
   deploy_staging:
