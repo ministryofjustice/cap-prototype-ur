@@ -160,7 +160,11 @@
     headingEl.textContent = 'How will the children get between households?';
     document.getElementById('label-parent1Collects').textContent = escHtml(parent1Name) + ' collects the children';
     document.getElementById('label-parent2Collects').textContent = escHtml(parent2Name) + ' collects the children';
-    backLink.href = '../parents.html?design=3';
+    // Back link goes to last L&V page the user would have come from
+    var lvDaytime = getD3Question('willDaytimeVisitsHappen');
+    var daytimeHadYes = (lvDaytime.mode === 'all' && lvDaytime.allAnswer === 'Yes') ||
+      (lvDaytime.mode === 'perChild' && (lvDaytime.perChildAnswers || []).some(function(a) { return a === 'Yes'; }));
+    backLink.href = daytimeHadYes ? 'which-days-daytime-visits.html' : 'will-daytime-visits-happen.html';
 
     if (childCount >= 2) {
       document.getElementById('section-per-child-option').style.display = '';

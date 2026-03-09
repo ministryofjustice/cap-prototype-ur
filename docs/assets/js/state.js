@@ -178,3 +178,25 @@ function isD3QuestionComplete(qKey) {
   const { children } = getNames();
   return children.length > 0 && children.every((_, i) => !!(q.perChildAnswers || [])[i]);
 }
+
+// ─── Design 2: Living & visiting completion helpers ───────────────────────────
+
+function isD2LVOvernightsComplete() {
+  const { children } = getNames();
+  return children.length > 0 && children.every((_, i) => {
+    const a = getChildPlan(i).answers || {};
+    if (!a.willOvernightsHappen) return false;
+    if (a.willOvernightsHappen === 'Yes') return !!(a.whichDaysOvernight && a.whichDaysOvernight.length);
+    return true;
+  });
+}
+
+function isD2LVDaytimeComplete() {
+  const { children } = getNames();
+  return children.length > 0 && children.every((_, i) => {
+    const a = getChildPlan(i).answers || {};
+    if (!a.willDaytimeVisitsHappen) return false;
+    if (a.willDaytimeVisitsHappen === 'Yes') return !!(a.whichDaysDaytimeVisits && a.whichDaysDaytimeVisits.length);
+    return true;
+  });
+}
