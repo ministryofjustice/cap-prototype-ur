@@ -45,7 +45,7 @@
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <span class="govuk-caption-l" id="page-caption">Loading…</span>
-                <h1 class="govuk-fieldset__heading" id="page-heading">Which days will the child have daytime visits?</h1>
+                <h1 class="govuk-fieldset__heading" id="page-heading">On which days will daytime visits happen?</h1>
               </legend>
               <div class="govuk-hint">Select all that apply.</div>
               <div id="checkbox-error" class="govuk-error-message" style="display:none;">
@@ -151,7 +151,7 @@
     document.getElementById('page-caption').textContent = childCount > 1
       ? 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Living and visiting'
       : 'Living and visiting';
-    document.getElementById('page-heading').textContent = 'Which days will ' + childName + ' have daytime visits?';
+    document.getElementById('page-heading').textContent = 'On which days will daytime visits happen?';
     document.getElementById('back-link').href = 'will-daytime-visits-happen.html?child=' + childIdx;
 
     var saved = getChildPlan(childIdx).answers || {};

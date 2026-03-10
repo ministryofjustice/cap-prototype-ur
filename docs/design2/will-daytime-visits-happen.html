@@ -46,7 +46,7 @@
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <span class="govuk-caption-l" id="page-caption">Loading…</span>
-                <h1 class="govuk-fieldset__heading" id="page-heading">Will the child have daytime visits?</h1>
+                <h1 class="govuk-fieldset__heading" id="page-heading">Will the children do daytime visits?</h1>
               </legend>
               <div id="radio-error" class="govuk-error-message" style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span>
@@ -66,6 +66,7 @@
           </div>
 
           <div class="govuk-form-group" id="apply-all-group" style="display:none;">
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
               <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="apply-to-all" name="apply-to-all" type="checkbox" value="yes">
@@ -111,11 +112,12 @@
   var lastChild = children.length - 1;
   var childCount = children.length;
   var childName = children[childIdx] || 'the child';
+  var parent2Name = names.parent2 || 'Parent 2';
 
   document.getElementById('page-caption').textContent = childCount > 1
     ? 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Living and visiting'
     : 'Living and visiting';
-  document.getElementById('page-heading').textContent = 'Will ' + childName + ' have daytime visits?';
+  document.getElementById('page-heading').textContent = 'Will ' + childName + ' do daytime visits with ' + parent2Name + '?';
   document.getElementById('back-link').href = childIdx === 0 ? 'task-list.html' : 'will-daytime-visits-happen.html?child=' + (childIdx - 1);
 
   if (childCount >= 2) { document.getElementById('apply-all-group').style.display = 'block'; }

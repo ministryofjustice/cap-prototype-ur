@@ -44,7 +44,7 @@
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <span class="govuk-caption-l" id="page-caption"></span>
-                <h1 class="govuk-fieldset__heading" id="page-heading">Which days will the children have daytime visits?</h1>
+                <h1 class="govuk-fieldset__heading" id="page-heading">On which days will daytime visits happen?</h1>
               </legend>
               <div class="govuk-hint">Select all that apply.</div>
               <div id="checkbox-error" class="govuk-error-message" style="display:none;">
@@ -194,7 +194,7 @@
     if (childCount > 1) {
       captionEl.textContent = 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Living and visiting';
     }
-    headingEl.textContent = 'Which days will ' + childName + ' have daytime visits?';
+    headingEl.textContent = 'On which days will daytime visits happen?';
     backLink.href = childIdx === 0 ? 'which-days-daytime-visits.html' : 'which-days-daytime-visits.html?perchild=1&child=' + (childIdx - 1);
 
     var savedPC = (getD3Question('whichDaysDaytimeVisits').perChildAnswers || [])[childIdx] || {};
@@ -233,7 +233,7 @@
 
   } else {
     if (childCount > 1) captionEl.textContent = 'Living and visiting';
-    headingEl.textContent = 'Which days will the children have daytime visits?';
+    headingEl.textContent = 'On which days will daytime visits happen?';
     backLink.href = 'will-daytime-visits-happen.html';
 
     if (childCount >= 2) {

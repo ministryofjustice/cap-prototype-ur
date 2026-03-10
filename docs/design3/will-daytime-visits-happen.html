@@ -44,7 +44,7 @@
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <span class="govuk-caption-l" id="page-caption"></span>
-                <h1 class="govuk-fieldset__heading" id="page-heading">Will the children have daytime visits?</h1>
+                <h1 class="govuk-fieldset__heading" id="page-heading">Will the children do daytime visits with Parent 2?</h1>
               </legend>
               <div id="radio-error" class="govuk-error-message" style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span>
@@ -64,6 +64,7 @@
           </div>
 
           <div id="section-per-child-option" style="display:none;" class="govuk-!-margin-top-4">
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
             <p class="govuk-body">Or</p>
             <div class="govuk-radios" data-module="govuk-radios">
               <div class="govuk-radios__item">
@@ -109,6 +110,7 @@
   var lastChild = children.length - 1;
   var childCount = children.length;
   var childName = children[childIdx] || 'the child';
+  var parent2Name = names.parent2 || 'Parent 2';
 
   var captionEl = document.getElementById('page-caption');
   var headingEl = document.getElementById('page-heading');
@@ -125,7 +127,7 @@
     if (childCount > 1) {
       captionEl.textContent = 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Living and visiting';
     }
-    headingEl.textContent = 'Will ' + childName + ' have daytime visits?';
+    headingEl.textContent = 'Will ' + childName + ' do daytime visits with ' + parent2Name + '?';
     backLink.href = childIdx === 0 ? 'will-daytime-visits-happen.html' : 'will-daytime-visits-happen.html?perchild=1&child=' + (childIdx - 1);
 
     var q = getD3Question('willDaytimeVisitsHappen');
@@ -136,7 +138,7 @@
     }
   } else {
     if (childCount > 1) captionEl.textContent = 'Living and visiting';
-    headingEl.textContent = 'Will the children have daytime visits?';
+    headingEl.textContent = 'Will the children do daytime visits with ' + parent2Name + '?';
     backLink.href = anyAnswerIs('willOvernightsHappen', 'Yes') ? 'which-days-overnight.html' : 'will-overnights-happen.html';
 
     if (childCount >= 2) {
