@@ -73,6 +73,8 @@
             </div>
           </div>
 
+          <p class="govuk-body"><a class="govuk-link" href="#" id="skip-link">Skip this question</a></p>
+
           <div class="govuk-button-group govuk-!-margin-top-6">
             <button class="govuk-button" data-module="govuk-button" id="continue-btn" type="button">Continue</button>
           </div>
@@ -201,6 +203,26 @@
       } else {
         window.location.href = 'get-between-households.html';
       }
+    }
+  });
+
+  document.getElementById('skip-link').addEventListener('click', function (e) {
+    e.preventDefault();
+    var skipAnswer = { answer: 'skip' };
+    if (isPerChild) {
+      setD3PerChildAnswer('willDaytimeVisitsHappen', childIdx, skipAnswer);
+      if (childIdx < lastChild) {
+        window.location.href = 'will-daytime-visits-happen.html?perchild=1&child=' + (childIdx + 1);
+      } else {
+        if (anyAnswerIs('willDaytimeVisitsHappen', 'Yes')) {
+          window.location.href = 'which-days-daytime-visits.html?perchild=1&child=0';
+        } else {
+          window.location.href = 'get-between-households.html';
+        }
+      }
+    } else {
+      setD3AllAnswer('willDaytimeVisitsHappen', skipAnswer);
+      window.location.href = 'get-between-households.html';
     }
   });
 })();
