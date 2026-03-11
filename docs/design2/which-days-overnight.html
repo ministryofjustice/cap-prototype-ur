@@ -132,6 +132,7 @@
   var names = getNames();
   var children = names.children || [];
   var childCount = children.length;
+  var lvApplyToAll = (getState().design2 || {}).lvApplyToAll || false;
 
   function nextNeedingOvernightDays(startIdx) {
     for (var i = startIdx; i < childCount; i++) {
@@ -172,12 +173,17 @@
     }
 
     function saveAndNavigate(days, otherText) {
-      setChildPlan(childIdx, { answers: { whichDaysOvernight: days, whichDaysOvernightOther: otherText } });
-      var next = nextNeedingOvernightDays(childIdx + 1);
-      if (next !== -1) {
-        window.location.href = 'which-days-overnight.html?child=' + next;
-      } else {
+      if (lvApplyToAll) {
+        applyAnswerToAllChildren({ whichDaysOvernight: days, whichDaysOvernightOther: otherText });
         window.location.href = 'will-daytime-visits-happen.html?child=0';
+      } else {
+        setChildPlan(childIdx, { answers: { whichDaysOvernight: days, whichDaysOvernightOther: otherText } });
+        var next = nextNeedingOvernightDays(childIdx + 1);
+        if (next !== -1) {
+          window.location.href = 'which-days-overnight.html?child=' + next;
+        } else {
+          window.location.href = 'will-daytime-visits-happen.html?child=0';
+        }
       }
     }
 

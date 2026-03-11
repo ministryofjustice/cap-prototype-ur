@@ -93,6 +93,7 @@
   var names = getNames();
   var children = names.children || [];
   var childCount = children.length;
+  var lvApplyToAll = (getState().design2 || {}).lvApplyToAll || false;
 
   // Find next child at or after startIdx who needs schedule
   function nextNeedingSchedule(startIdx) {
@@ -126,12 +127,17 @@
     document.getElementById('schedule-text').value = saved;
 
     function saveAndNavigate(text) {
-      setChildPlan(childIdx, { answers: { whichSchedule: text } });
-      var next = nextNeedingSchedule(childIdx + 1);
-      if (next !== -1) {
-        window.location.href = 'which-schedule.html?child=' + next;
-      } else {
+      if (lvApplyToAll) {
+        applyAnswerToAllChildren({ whichSchedule: text });
         window.location.href = 'will-overnights-happen.html?child=0';
+      } else {
+        setChildPlan(childIdx, { answers: { whichSchedule: text } });
+        var next = nextNeedingSchedule(childIdx + 1);
+        if (next !== -1) {
+          window.location.href = 'which-schedule.html?child=' + next;
+        } else {
+          window.location.href = 'will-overnights-happen.html?child=0';
+        }
       }
     }
 

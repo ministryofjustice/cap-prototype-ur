@@ -65,16 +65,6 @@
             </fieldset>
           </div>
 
-          <div class="govuk-form-group" id="apply-all-group" style="display:none;">
-            <p class="govuk-body govuk-!-margin-bottom-2">Or</p>
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="apply-to-all" name="apply-to-all" type="checkbox" value="yes">
-                <label class="govuk-label govuk-checkboxes__label" for="apply-to-all">Apply this answer to all children</label>
-              </div>
-            </div>
-          </div>
-
           <p class="govuk-body"><a class="govuk-link" href="#" id="skip-link">Skip this question</a></p>
 
           <div class="govuk-button-group">
@@ -115,14 +105,13 @@
   var childCount = children.length;
   var childName = children[childIdx] || 'the child';
   var parent2Name = names.parent2 || 'Parent 2';
+  var lvApplyToAll = (getState().design2 || {}).lvApplyToAll || false;
 
   document.getElementById('page-caption').textContent = childCount > 1
     ? 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Question 5 of 6'
     : 'Question 5 of 6';
   document.getElementById('page-heading').textContent = 'Will ' + childName + ' do daytime visits with ' + parent2Name + '?';
   document.getElementById('back-link').href = childIdx === 0 ? 'task-list.html' : 'will-daytime-visits-happen.html?child=' + (childIdx - 1);
-
-  if (childCount >= 2) { document.getElementById('apply-all-group').style.display = 'block'; }
 
   var saved = (getChildPlan(childIdx).answers || {}).willDaytimeVisitsHappen;
   if (saved) {
@@ -142,13 +131,22 @@
   }
 
   function navigate(updates, childI) {
-    setChildPlan(childI, { answers: updates });
-    if (updates.willDaytimeVisitsHappen === 'Yes') {
-      window.location.href = 'which-days-daytime-visits.html?child=' + childI;
-    } else if (childI < lastChild) {
-      window.location.href = 'will-daytime-visits-happen.html?child=' + (childI + 1);
+    if (lvApplyToAll) {
+      applyAnswerToAllChildren(updates);
+      if (updates.willDaytimeVisitsHappen === 'Yes') {
+        window.location.href = 'which-days-daytime-visits.html?child=0';
+      } else {
+        window.location.href = 'task-list.html';
+      }
     } else {
-      afterAllAnswered(updates.willDaytimeVisitsHappen);
+      setChildPlan(childI, { answers: updates });
+      if (updates.willDaytimeVisitsHappen === 'Yes') {
+        window.location.href = 'which-days-daytime-visits.html?child=' + childI;
+      } else if (childI < lastChild) {
+        window.location.href = 'will-daytime-visits-happen.html?child=' + (childI + 1);
+      } else {
+        afterAllAnswered(updates.willDaytimeVisitsHappen);
+      }
     }
   }
 
@@ -165,29 +163,12 @@
       return;
     }
     var updates = { willDaytimeVisitsHappen: selected.value };
-    var applyAll = document.getElementById('apply-to-all');
-    if (applyAll && applyAll.checked) {
-      applyAnswerToAllChildren(updates);
-      if (updates.willDaytimeVisitsHappen === 'Yes') {
-        window.location.href = 'which-days-daytime-visits.html?child=0';
-      } else {
-        window.location.href = 'task-list.html';
-      }
-    } else {
-      navigate(updates, childIdx);
-    }
+    navigate(updates, childIdx);
   });
 
   document.getElementById('skip-link').addEventListener('click', function (e) {
     e.preventDefault();
-    var skipUpdates = { willDaytimeVisitsHappen: 'skip' };
-    var applyAll = document.getElementById('apply-to-all');
-    if (applyAll && applyAll.checked) {
-      applyAnswerToAllChildren(skipUpdates);
-      window.location.href = 'task-list.html';
-    } else {
-      navigate(skipUpdates, childIdx);
-    }
+    navigate({ willDaytimeVisitsHappen: 'skip' }, childIdx);
   });
 })();
 </script>

@@ -132,6 +132,7 @@
   var names = getNames();
   var children = names.children || [];
   var childCount = children.length;
+  var lvApplyToAll = (getState().design2 || {}).lvApplyToAll || false;
 
   function nextNeedingDaytimeDays(startIdx) {
     for (var i = startIdx; i < childCount; i++) {
@@ -172,12 +173,17 @@
     }
 
     function saveAndNavigate(days, otherText) {
-      setChildPlan(childIdx, { answers: { whichDaysDaytimeVisits: days, whichDaysDaytimeVisitsOther: otherText } });
-      var next = nextNeedingDaytimeDays(childIdx + 1);
-      if (next !== -1) {
-        window.location.href = 'which-days-daytime-visits.html?child=' + next;
-      } else {
+      if (lvApplyToAll) {
+        applyAnswerToAllChildren({ whichDaysDaytimeVisits: days, whichDaysDaytimeVisitsOther: otherText });
         window.location.href = 'task-list.html';
+      } else {
+        setChildPlan(childIdx, { answers: { whichDaysDaytimeVisits: days, whichDaysDaytimeVisitsOther: otherText } });
+        var next = nextNeedingDaytimeDays(childIdx + 1);
+        if (next !== -1) {
+          window.location.href = 'which-days-daytime-visits.html?child=' + next;
+        } else {
+          window.location.href = 'task-list.html';
+        }
       }
     }
 
