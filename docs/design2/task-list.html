@@ -129,8 +129,6 @@
       var q5Complete = isD2QuestionComplete('itemsForChangeover');
 
       var lvMostlyLiveComplete = isD2QuestionComplete('mostlyLive');
-      var lvOvernightsComplete = isD2LVOvernightsComplete();
-      var lvDaytimeComplete = isD2LVDaytimeComplete();
 
       function qHref(qKey, page) {
         var n = getFirstUnansweredChildForQuestion(qKey);
@@ -138,12 +136,7 @@
       }
 
       var lvMostlyLiveStatus = lvMostlyLiveComplete ? 'complete' : 'incomplete';
-      var lvOvernightsStatus = !lvMostlyLiveComplete ? 'cannotStart' : (lvOvernightsComplete ? 'complete' : 'incomplete');
-      var lvDaytimeStatus = !lvOvernightsComplete ? 'cannotStart' : (lvDaytimeComplete ? 'complete' : 'incomplete');
-
       var lvMostlyLiveHref = qHref('mostlyLive', 'mostly-live.html');
-      var lvOvernightsHref = lvMostlyLiveComplete ? qHref('willOvernightsHappen', 'will-overnights-happen.html') : '#';
-      var lvDaytimeHref = lvOvernightsComplete ? qHref('willDaytimeVisitsHappen', 'will-daytime-visits-happen.html') : '#';
 
       var q1Status = q1Complete ? 'complete' : 'incomplete';
       var q2Status = !q1Complete ? 'cannotStart' : (q2Complete ? 'complete' : 'incomplete');
@@ -163,9 +156,7 @@
       );
 
       html += section('Living and visiting',
-        taskItem('Where will the children mostly live?', lvMostlyLiveStatus, lvMostlyLiveHref, 'mostlyLive') +
-        taskItem('Will there be overnight stays?', lvOvernightsStatus, lvOvernightsHref, 'overnights') +
-        taskItem('Will there be daytime visits?', lvDaytimeStatus, lvDaytimeHref, 'daytime')
+        taskItem('Where will the children mostly live?', lvMostlyLiveStatus, lvMostlyLiveHref, 'mostlyLive')
       );
 
       html += section('Handovers and holidays',
