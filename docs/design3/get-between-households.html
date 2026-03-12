@@ -165,7 +165,7 @@
     var lvDaytime = getD3Question('willDaytimeVisitsHappen');
     var daytimeHadYes = (lvDaytime.mode === 'all' && lvDaytime.allAnswer === 'Yes') ||
       (lvDaytime.mode === 'perChild' && (lvDaytime.perChildAnswers || []).some(function(a) { return a === 'Yes'; }));
-    backLink.href = daytimeHadYes ? 'which-days-daytime-visits.html' : 'will-daytime-visits-happen.html';
+    backLink.href = 'task-list.html';
 
     if (childCount >= 2) {
       document.getElementById('section-per-child-option').style.display = '';
