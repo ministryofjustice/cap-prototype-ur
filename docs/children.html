@@ -114,7 +114,7 @@
       div.innerHTML = '<label class="govuk-label" for="child-' + index + '">' + childLabel(index) + '</label>' +
         '<div style="display:flex;gap:8px;align-items:center">' +
         '<input class="govuk-input govuk-input--width-20 child-name-input" id="child-' + index + '" type="text" value="' + escHtml(value) + '" autocomplete="off">' +
-        (index > 0 ? '<button type="button" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 remove-child-btn" style="white-space:nowrap">Remove</button>' : '') +
+        (index > 0 ? '<button type="button" class="govuk-button govuk-button--warning govuk-!-margin-bottom-0 remove-child-btn" style="white-space:nowrap">Remove</button>' : '') +
         '</div>';
       if (index > 0) {
         div.querySelector('.remove-child-btn').addEventListener('click', function() {
