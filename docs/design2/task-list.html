@@ -130,15 +130,21 @@
       var q3Complete = isD2Q3Complete();
       var q5Complete = isD2QuestionComplete('itemsForChangeover');
 
-      var lvMostlyLiveComplete = isD2QuestionComplete('mostlyLive');
+      var lvComplete = isD2LVDaytimeComplete();
+
+      var specialDaysComplete = isD2QuestionComplete('whatWillHappen');
+      var otherThingsComplete = isD2QuestionComplete('whatOtherThingsMatter');
+      var dm1Complete = isDMComplete('planLastMinuteChanges');
+      var dm2Complete = isDMComplete('planLongTermNotice');
+      var dm3Complete = isDMComplete('planReview');
 
       function qHref(qKey, page) {
         var n = getFirstUnansweredChildForQuestion(qKey);
         return page + '?child=' + n;
       }
 
-      var lvMostlyLiveStatus = lvMostlyLiveComplete ? 'complete' : 'incomplete';
-      var lvMostlyLiveHref = qHref('mostlyLive', 'mostly-live.html');
+      var lvStatus = lvComplete ? 'complete' : 'incomplete';
+      var lvHref = qHref('mostlyLive', 'mostly-live.html');
 
       var q1Status = q1Complete ? 'complete' : 'incomplete';
       var q2Status = !q1Complete ? 'cannotStart' : (q2Complete ? 'complete' : 'incomplete');
@@ -150,6 +156,19 @@
       var q3Href = q2Complete ? qHref('willChangeDuringHolidays', 'will-change-during-holidays.html') : '#';
       var q5Href = q3Complete ? qHref('itemsForChangeover', 'items-for-changeover.html') : '#';
 
+      var specialDaysStatus = specialDaysComplete ? 'complete' : 'incomplete';
+      var specialDaysHref = qHref('whatWillHappen', 'what-will-happen.html');
+
+      var otherThingsStatus = otherThingsComplete ? 'complete' : 'incomplete';
+      var otherThingsHref = qHref('whatOtherThingsMatter', 'what-other-things-matter.html');
+
+      var dm1Status = dm1Complete ? 'complete' : 'incomplete';
+      var dm1Href = 'plan-last-minute-changes.html';
+      var dm2Status = !dm1Complete ? 'cannotStart' : (dm2Complete ? 'complete' : 'incomplete');
+      var dm2Href = dm1Complete ? 'plan-long-term-notice.html' : '#';
+      var dm3Status = !dm2Complete ? 'cannotStart' : (dm3Complete ? 'complete' : 'incomplete');
+      var dm3Href = dm2Complete ? 'plan-review.html' : '#';
+
       var html = '';
 
       html += section('Who the plan is for',
@@ -158,7 +177,7 @@
       );
 
       html += section('Living and visiting',
-        taskItem('Where will the children mostly live?', lvMostlyLiveStatus, lvMostlyLiveHref, 'mostlyLive')
+        taskItem('Where will the children mostly live?', lvStatus, lvHref, 'mostlyLive')
       );
 
       html += section('Handovers and holidays',
@@ -169,23 +188,24 @@
       );
 
       html += section('Special days',
-        cannotStartItem('What will happen on special days?', 'specialDays')
+        taskItem('What will happen on special days?', specialDaysStatus, specialDaysHref, 'specialDays')
       );
 
       html += section('Other things',
-        cannotStartItem('What other things matter to your children?', 'otherThings')
+        taskItem('What other things matter to your children?', otherThingsStatus, otherThingsHref, 'otherThings')
       );
 
       html += section('Decision making',
-        cannotStartItem('How should last-minute changes be communicated?', 'dm1') +
-        cannotStartItem('How much notice should you give to change long-term arrangements?', 'dm2') +
-        cannotStartItem('When will the children\'s needs change?', 'dm3')
+        taskItem('How should last-minute changes be communicated?', dm1Status, dm1Href, 'dm1') +
+        taskItem('How much notice should you give to change long-term arrangements?', dm2Status, dm2Href, 'dm2') +
+        taskItem('When will the children\'s needs change?', dm3Status, dm3Href, 'dm3')
       );
 
       document.getElementById('task-list-root').innerHTML = html;
 
       var allHHDone = q1Complete && q2Complete && q3Complete && q5Complete;
-      document.getElementById('continue-section').style.display = allHHDone ? '' : 'none';
+      var allDone = lvComplete && allHHDone && specialDaysComplete && otherThingsComplete && dm1Complete && dm2Complete && dm3Complete;
+      document.getElementById('continue-section').style.display = allDone ? '' : 'none';
     }
 
     render();

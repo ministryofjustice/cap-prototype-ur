@@ -139,14 +139,31 @@
       var q3Complete = isD3Q3Complete();
       var q5Complete = isD3QuestionComplete('itemsForChangeover');
 
-      var lvMostlyLiveComplete = isD3QuestionComplete('mostlyLive');
+      var lvComplete = isD3LVDaytimeComplete();
 
-      var lvMostlyLiveStatus = lvMostlyLiveComplete ? 'complete' : 'incomplete';
+      var specialDaysComplete = isD3QuestionComplete('whatWillHappen');
+      var otherThingsComplete = isD3QuestionComplete('whatOtherThingsMatter');
+      var dm1Complete = isDMComplete('planLastMinuteChanges');
+      var dm2Complete = isDMComplete('planLongTermNotice');
+      var dm3Complete = isDMComplete('planReview');
+
+      var lvStatus = lvComplete ? 'complete' : 'incomplete';
 
       var q1Status = q1Complete ? 'complete' : 'incomplete';
       var q2Status = !q1Complete ? 'cannotStart' : (q2Complete ? 'complete' : 'incomplete');
       var q3Status = !q2Complete ? 'cannotStart' : (q3Complete ? 'complete' : 'incomplete');
       var q5Status = !q3Complete ? 'cannotStart' : (q5Complete ? 'complete' : 'incomplete');
+
+      var specialDaysStatus = specialDaysComplete ? 'complete' : 'incomplete';
+      var specialDaysHref = 'what-will-happen.html';
+      var otherThingsStatus = otherThingsComplete ? 'complete' : 'incomplete';
+      var otherThingsHref = 'what-other-things-matter.html';
+      var dm1Status = dm1Complete ? 'complete' : 'incomplete';
+      var dm1Href = 'plan-last-minute-changes.html';
+      var dm2Status = !dm1Complete ? 'cannotStart' : (dm2Complete ? 'complete' : 'incomplete');
+      var dm2Href = dm1Complete ? 'plan-long-term-notice.html' : '#';
+      var dm3Status = !dm2Complete ? 'cannotStart' : (dm3Complete ? 'complete' : 'incomplete');
+      var dm3Href = dm2Complete ? 'plan-review.html' : '#';
 
       var html = '';
 
@@ -156,34 +173,35 @@
       );
 
       html += section('Living and visiting',
-        taskItem('Where will the children mostly live?', lvMostlyLiveStatus, 'mostly-live.html', 'mostlyLive')
+        taskItem('Where will the children mostly live?', lvStatus, 'mostly-live.html', 'mostlyLive')
       );
 
       html += section('Handovers and holidays',
         taskItem('How will the children get between households?', q1Status, 'get-between-households.html', 'q1') +
         taskItem('Where does handover take place?', q2Status, q2Complete ? 'where-handover.html' : '#', 'q2') +
-        taskItem('Will these arrangements change during school holidays?', q3Status, q3Complete ? 'will-change-during-holidays.html' : (q2Complete ? 'will-change-during-holidays.html' : '#'), 'q3') +
+        taskItem('Will these arrangements change during school holidays?', q3Status, q2Complete ? 'will-change-during-holidays.html' : '#', 'q3') +
         taskItem('What items need to go between households?', q5Status, q3Complete ? 'items-for-changeover.html' : '#', 'q5')
       );
 
       html += section('Special days',
-        cannotStartItem('What will happen on special days?', 'specialDays')
+        taskItem('What will happen on special days?', specialDaysStatus, specialDaysHref, 'specialDays')
       );
 
       html += section('Other things',
-        cannotStartItem('What other things matter to your children?', 'otherThings')
+        taskItem('What other things matter to your children?', otherThingsStatus, otherThingsHref, 'otherThings')
       );
 
       html += section('Decision making',
-        cannotStartItem('How should last-minute changes be communicated?', 'dm1') +
-        cannotStartItem('How much notice should you give to change long-term arrangements?', 'dm2') +
-        cannotStartItem('When will the children\'s needs change?', 'dm3')
+        taskItem('How should last-minute changes be communicated?', dm1Status, dm1Href, 'dm1') +
+        taskItem('How much notice should you give to change long-term arrangements?', dm2Status, dm2Href, 'dm2') +
+        taskItem('When will the children\'s needs change?', dm3Status, dm3Href, 'dm3')
       );
 
       document.getElementById('task-list-root').innerHTML = html;
 
       var allHHDone = q1Complete && q2Complete && q3Complete && q5Complete;
-      document.getElementById('continue-section').style.display = allHHDone ? '' : 'none';
+      var allDone = lvComplete && allHHDone && specialDaysComplete && otherThingsComplete && dm1Complete && dm2Complete && dm3Complete;
+      document.getElementById('continue-section').style.display = allDone ? '' : 'none';
     }
 
     render();

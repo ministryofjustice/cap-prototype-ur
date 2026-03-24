@@ -200,3 +200,66 @@ function isD2LVDaytimeComplete() {
     return true;
   });
 }
+
+// ─── Design 3: Living & visiting conditional completion helpers ───────────────
+
+function isD3LVOvernightsComplete() {
+  const q = getD3Question('willOvernightsHappen');
+  if (!q.mode) return false;
+  const hasYes = (q.mode === 'all' && q.allAnswer && q.allAnswer.answer === 'Yes') ||
+    (q.mode === 'perChild' && (q.perChildAnswers || []).some(a => a && a.answer === 'Yes'));
+  if (!hasYes) {
+    if (q.mode === 'all') return !!q.allAnswer;
+    const { children } = getNames();
+    return children.length > 0 && children.every((_, i) => !!(q.perChildAnswers || [])[i]);
+  }
+  const od = getD3Question('whichDaysOvernight');
+  if (!od.mode) return false;
+  if (od.mode === 'all') return !!(od.allAnswer && od.allAnswer.days && od.allAnswer.days.length);
+  const { children } = getNames();
+  return children.length > 0 && children.every((_, i) => {
+    const willOv = (q.perChildAnswers || [])[i];
+    if (!willOv) return false;
+    if (willOv.answer !== 'Yes') return true;
+    const ovDays = (od.perChildAnswers || [])[i];
+    return !!(ovDays && ovDays.days && ovDays.days.length);
+  });
+}
+
+function isD3LVDaytimeComplete() {
+  const q = getD3Question('willDaytimeVisitsHappen');
+  if (!q.mode) return false;
+  const hasYes = (q.mode === 'all' && q.allAnswer && q.allAnswer.answer === 'Yes') ||
+    (q.mode === 'perChild' && (q.perChildAnswers || []).some(a => a && a.answer === 'Yes'));
+  if (!hasYes) {
+    if (q.mode === 'all') return !!q.allAnswer;
+    const { children } = getNames();
+    return children.length > 0 && children.every((_, i) => !!(q.perChildAnswers || [])[i]);
+  }
+  const dv = getD3Question('whichDaysDaytimeVisits');
+  if (!dv.mode) return false;
+  if (dv.mode === 'all') return !!(dv.allAnswer && dv.allAnswer.days && dv.allAnswer.days.length);
+  const { children } = getNames();
+  return children.length > 0 && children.every((_, i) => {
+    const willDt = (q.perChildAnswers || [])[i];
+    if (!willDt) return false;
+    if (willDt.answer !== 'Yes') return true;
+    const dtDays = (dv.perChildAnswers || [])[i];
+    return !!(dtDays && dtDays.days && dtDays.days.length);
+  });
+}
+
+// ─── Decision Making helpers (shared by both designs) ─────────────────────────
+
+function getDMAnswer(key) {
+  const s = getState();
+  return s.decisionMaking ? s.decisionMaking[key] : undefined;
+}
+
+function setDMAnswer(key, value) {
+  setState({ decisionMaking: { [key]: value } });
+}
+
+function isDMComplete(key) {
+  return getDMAnswer(key) != null;
+}
