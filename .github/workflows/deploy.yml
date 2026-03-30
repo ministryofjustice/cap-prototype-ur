@@ -92,7 +92,6 @@ jobs:
 
           case "${{ inputs.environment }}" in
             development) TAG="dev-v${VERSION}-${{ github.run_number }}" ;;
-            staging) TAG="staging-v${VERSION}" ;;
             *) TAG="${{ inputs.environment }}-v${VERSION}-${{ github.run_number }}" ;;
           esac
 

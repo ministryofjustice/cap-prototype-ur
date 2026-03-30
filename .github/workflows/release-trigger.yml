@@ -2,13 +2,6 @@ name: Deploy release directly to Cloud Platform
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        type: choice
-        description: Target environment
-        options:
-        - development
-        - staging
 
 permissions: {}
 
@@ -26,20 +19,9 @@ jobs:
 
   deploy_development:
     name: 'Deploy to Development'
-    if: github.event.inputs.environment == 'development'
     uses: ./.github/workflows/deploy.yml
     needs: [image, validate]
     with:
       environment: development
-      registry: ${{ needs.image.outputs.registry }}
-    secrets: inherit
-
-  deploy_staging:
-    name: 'Deploy to Staging'
-    if: github.event.inputs.environment == 'staging'
-    uses: ./.github/workflows/deploy.yml
-    needs: [image, validate]
-    with:
-      environment: staging
       registry: ${{ needs.image.outputs.registry }}
     secrets: inherit
