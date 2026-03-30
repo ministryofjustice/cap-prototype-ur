@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Your parenting plan – Design 2</title>
+  <title>Your parenting plan – Design 3</title>
   <link rel="stylesheet" href="../assets/govuk-frontend.min.css">
   <link rel="preload" href="../assets/fonts/light-94a07e06a1-v2.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/bold-b542beb274-v2.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="prefetch" href="get-between-households.html">
   <link rel="prefetch" href="mostly-live.html">
+  <link rel="prefetch" href="get-between-households.html">
 </head>
 <body class="govuk-template__body">
   <script>document.body.classList.add('govuk-frontend-supported')</script>
@@ -33,7 +33,7 @@
     <div class="govuk-phase-banner">
       <p class="govuk-phase-banner__content">
         <strong class="govuk-tag govuk-phase-banner__content__tag">Research prototype</strong>
-        <span class="govuk-phase-banner__text">Design 2 – Answer each question for all children in turn</span>
+        <span class="govuk-phase-banner__text">This is a prototype for user research only.</span>
       </p>
     </div>
 
@@ -115,6 +115,15 @@
         '<ul class="govuk-task-list">' + itemsHtml + '</ul>';
     }
 
+    function isD3Q3Complete() {
+      var wc = getD3Question('willChangeDuringHolidays');
+      if (!wc.mode) return false;
+      var hadYes = (wc.mode === 'all' && wc.allAnswer === 'Yes') ||
+        (wc.mode === 'perChild' && (wc.perChildAnswers || []).some(function(a) { return a === 'Yes'; }));
+      if (hadYes) return isD3QuestionComplete('howChangeDuringHolidays');
+      return true;
+    }
+
     function render() {
       var names = getNames();
       var children = names.children || [];
@@ -125,43 +134,30 @@
         return;
       }
 
-      var q1Complete = isD2QuestionComplete('getBetweenHouseholds');
-      var q2Complete = isD2QuestionComplete('whereHandover');
-      var q3Complete = isD2Q3Complete();
-      var q5Complete = isD2QuestionComplete('itemsForChangeover');
+      var q1Complete = isD3QuestionComplete('getBetweenHouseholds');
+      var q2Complete = isD3QuestionComplete('whereHandover');
+      var q3Complete = isD3Q3Complete();
+      var q5Complete = isD3QuestionComplete('itemsForChangeover');
 
-      var lvComplete = isD2LVDaytimeComplete();
+      var lvComplete = isD3LVDaytimeComplete();
 
-      var specialDaysComplete = isD2QuestionComplete('whatWillHappen');
-      var otherThingsComplete = isD2QuestionComplete('whatOtherThingsMatter');
+      var specialDaysComplete = isD3QuestionComplete('whatWillHappen');
+      var otherThingsComplete = isD3QuestionComplete('whatOtherThingsMatter');
       var dm1Complete = isDMComplete('planLastMinuteChanges');
       var dm2Complete = isDMComplete('planLongTermNotice');
       var dm3Complete = isDMComplete('planReview');
 
-      function qHref(qKey, page) {
-        var n = getFirstUnansweredChildForQuestion(qKey);
-        return page + '?child=' + n;
-      }
-
       var lvStatus = lvComplete ? 'complete' : 'incomplete';
-      var lvHref = qHref('mostlyLive', 'mostly-live.html');
 
       var q1Status = q1Complete ? 'complete' : 'incomplete';
       var q2Status = !q1Complete ? 'cannotStart' : (q2Complete ? 'complete' : 'incomplete');
       var q3Status = !q2Complete ? 'cannotStart' : (q3Complete ? 'complete' : 'incomplete');
       var q5Status = !q3Complete ? 'cannotStart' : (q5Complete ? 'complete' : 'incomplete');
 
-      var q1Href = qHref('getBetweenHouseholds', 'get-between-households.html');
-      var q2Href = q1Complete ? qHref('whereHandover', 'where-handover.html') : '#';
-      var q3Href = q2Complete ? qHref('willChangeDuringHolidays', 'will-change-during-holidays.html') : '#';
-      var q5Href = q3Complete ? qHref('itemsForChangeover', 'items-for-changeover.html') : '#';
-
       var specialDaysStatus = specialDaysComplete ? 'complete' : 'incomplete';
-      var specialDaysHref = qHref('whatWillHappen', 'what-will-happen.html');
-
+      var specialDaysHref = 'what-will-happen.html';
       var otherThingsStatus = otherThingsComplete ? 'complete' : 'incomplete';
-      var otherThingsHref = qHref('whatOtherThingsMatter', 'what-other-things-matter.html');
-
+      var otherThingsHref = 'what-other-things-matter.html';
       var dm1Status = dm1Complete ? 'complete' : 'incomplete';
       var dm1Href = 'plan-last-minute-changes.html';
       var dm2Status = !dm1Complete ? 'cannotStart' : (dm2Complete ? 'complete' : 'incomplete');
@@ -177,14 +173,14 @@
       );
 
       html += section('Living and visiting',
-        taskItem('Where will the children mostly live?', lvStatus, lvHref, 'mostlyLive')
+        taskItem('Where will the children mostly live?', lvStatus, 'mostly-live.html', 'mostlyLive')
       );
 
       html += section('Handovers and holidays',
-        taskItem('How will the children get between households?', q1Status, q1Href, 'q1') +
-        taskItem('Where does handover take place?', q2Status, q2Href, 'q2') +
-        taskItem('Will these arrangements change during school holidays?', q3Status, q3Href, 'q3') +
-        taskItem('What items need to go between households?', q5Status, q5Href, 'q5')
+        taskItem('How will the children get between households?', q1Status, 'get-between-households.html', 'q1') +
+        taskItem('Where does handover take place?', q2Status, q2Complete ? 'where-handover.html' : '#', 'q2') +
+        taskItem('Will these arrangements change during school holidays?', q3Status, q2Complete ? 'will-change-during-holidays.html' : '#', 'q3') +
+        taskItem('What items need to go between households?', q5Status, q3Complete ? 'items-for-changeover.html' : '#', 'q5')
       );
 
       html += section('Special days',

@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>How will the children get between households? – Design 3</title>
+  <title>Which days will the children have daytime visits? – Design 3</title>
   <link rel="stylesheet" href="../assets/govuk-frontend.min.css">
   <link rel="preload" href="../assets/fonts/light-94a07e06a1-v2.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/bold-b542beb274-v2.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="prefetch" href="where-handover.html">
+  <link rel="prefetch" href="get-between-households.html">
 </head>
 <body class="govuk-template__body"><script>document.body.classList.add('govuk-frontend-supported')</script>
 
@@ -34,41 +34,61 @@
     </p>
   </div>
 
-  <a href="#" class="govuk-back-link" id="back-link">Back</a>
+  <a href="will-daytime-visits-happen.html" class="govuk-back-link" id="back-link">Back</a>
 
   <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <form id="page-form" novalidate>
-          <div class="govuk-form-group" id="form-group-radio">
+
+          <div class="govuk-form-group" id="form-group-checkboxes">
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <span class="govuk-caption-l" id="page-caption"></span>
-                <h1 class="govuk-fieldset__heading" id="page-heading">How will the children get between households?</h1>
+                <h1 class="govuk-fieldset__heading" id="page-heading">On which days will daytime visits happen?</h1>
               </legend>
-              <div id="radio-error" class="govuk-error-message" style="display:none;">
+              <div class="govuk-hint">Select all that apply.</div>
+              <div id="checkbox-error" class="govuk-error-message" style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span>
-                <span id="radio-error-text">Select how the children get between households</span>
+                Select which days the children will have daytime visits
               </div>
-              <div class="govuk-radios" data-module="govuk-radios" id="radio-group">
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="parent1Collects" name="getBetweenHouseholds" type="radio" value="parent1Collects">
-                  <label class="govuk-label govuk-radios__label" for="parent1Collects" id="label-parent1Collects">Parent 1 collects the children</label>
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="checkbox-group">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="monday" name="whichDaysDaytimeVisits" type="checkbox" value="monday">
+                  <label class="govuk-label govuk-checkboxes__label" for="monday">Monday</label>
                 </div>
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="parent2Collects" name="getBetweenHouseholds" type="radio" value="parent2Collects">
-                  <label class="govuk-label govuk-radios__label" for="parent2Collects" id="label-parent2Collects">Parent 2 collects the children</label>
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="tuesday" name="whichDaysDaytimeVisits" type="checkbox" value="tuesday">
+                  <label class="govuk-label govuk-checkboxes__label" for="tuesday">Tuesday</label>
                 </div>
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="other" name="getBetweenHouseholds" type="radio" value="other" data-aria-controls="conditional-other">
-                  <label class="govuk-label govuk-radios__label" for="other">Another arrangement</label>
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="wednesday" name="whichDaysDaytimeVisits" type="checkbox" value="wednesday">
+                  <label class="govuk-label govuk-checkboxes__label" for="wednesday">Wednesday</label>
                 </div>
-                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-other">
-                  <div class="govuk-form-group" id="form-group-other-text">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="thursday" name="whichDaysDaytimeVisits" type="checkbox" value="thursday">
+                  <label class="govuk-label govuk-checkboxes__label" for="thursday">Thursday</label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="friday" name="whichDaysDaytimeVisits" type="checkbox" value="friday">
+                  <label class="govuk-label govuk-checkboxes__label" for="friday">Friday</label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="saturday" name="whichDaysDaytimeVisits" type="checkbox" value="saturday">
+                  <label class="govuk-label govuk-checkboxes__label" for="saturday">Saturday</label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="sunday" name="whichDaysDaytimeVisits" type="checkbox" value="sunday">
+                  <label class="govuk-label govuk-checkboxes__label" for="sunday">Sunday</label>
+                </div>
+                <div class="govuk-checkboxes__divider">or</div>
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="other" name="whichDaysDaytimeVisits" type="checkbox" value="other" data-behaviour="exclusive" data-aria-controls="conditional-other">
+                  <label class="govuk-label govuk-checkboxes__label" for="other">Another arrangement</label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-other">
+                  <div class="govuk-form-group">
                     <label class="govuk-label" for="other-text">Describe the arrangement</label>
-                    <div id="other-text-error" class="govuk-error-message" style="display:none;">
-                      <span class="govuk-visually-hidden">Error:</span>Enter a description of the arrangement
-                    </div>
                     <textarea class="govuk-textarea" id="other-text" name="other-text" rows="4"></textarea>
                   </div>
                 </div>
@@ -90,10 +110,11 @@
           <div class="govuk-button-group govuk-!-margin-top-6">
             <button class="govuk-button" data-module="govuk-button" id="continue-btn" type="button">Continue</button>
           </div>
+
         </form>
       </div>
     </div>
-</main>
+  </main>
 </div>
 
 <footer class="govuk-footer">
@@ -115,11 +136,6 @@
 <script src="../assets/js/state.js"></script>
 <script>
 (function () {
-  function escHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  }
-
   var params = new URLSearchParams(window.location.search);
   var isPerChild = params.get('perchild') === '1';
   var childIdx = parseInt(params.get('child') || '0', 10);
@@ -128,136 +144,148 @@
   var lastChild = children.length - 1;
   var childCount = children.length;
   var childName = children[childIdx] || 'the child';
-  var parent1Name = names.parent1 || 'Parent 1';
-  var parent2Name = names.parent2 || 'Parent 2';
 
   var captionEl = document.getElementById('page-caption');
   var headingEl = document.getElementById('page-heading');
   var backLink = document.getElementById('back-link');
 
-  if (isPerChild) {
-    if (childCount > 1) {
-      captionEl.textContent = 'Child ' + (childIdx + 1) + ' of ' + childCount;
-    }
-    headingEl.textContent = 'How will ' + escHtml(childName) + ' get between households?';
-    document.getElementById('label-parent1Collects').textContent = escHtml(parent1Name) + ' collects ' + escHtml(childName);
-    document.getElementById('label-parent2Collects').textContent = escHtml(parent2Name) + ' collects ' + escHtml(childName);
-    backLink.href = childIdx === 0 ? 'get-between-households.html' : 'get-between-households.html?perchild=1&child=' + (childIdx - 1);
+  function anyAnswerIs(qKey, value) {
+    var q = getD3Question(qKey);
+    if (q.mode === 'all') return q.allAnswer && q.allAnswer.answer === value;
+    if (q.mode === 'perChild') return (q.perChildAnswers || []).some(function(a) { return a && a.answer === value; });
+    return false;
+  }
 
-    var q = getD3Question('getBetweenHouseholds');
-    var saved = ((q.perChildAnswers || [])[childIdx]) || {};
-    if (saved.answer) {
-      var r = document.querySelector('input[name="getBetweenHouseholds"][value="' + saved.answer + '"]');
-      if (r) {
-        r.checked = true;
-        if (saved.answer === 'other') {
-          var cond = document.getElementById('conditional-other');
-          if (cond) cond.classList.remove('govuk-radios__conditional--hidden');
+  function nextNeedingDaytimeDaysPC(startIdx) {
+    for (var i = startIdx; i < childCount; i++) {
+      var q = getD3Question('willDaytimeVisitsHappen');
+      var a = ((q.perChildAnswers || [])[i]) || {};
+      if (a.answer === 'Yes') return i;
+    }
+    return -1;
+  }
+
+  function restoreCheckboxes(days, otherText) {
+    if (Array.isArray(days)) {
+      days.forEach(function (v) {
+        var cb = document.querySelector('input[name="whichDaysDaytimeVisits"][value="' + v + '"]');
+        if (cb) {
+          cb.checked = true;
+          if (v === 'other') {
+            var cond = document.getElementById('conditional-other');
+            if (cond) cond.classList.remove('govuk-checkboxes__conditional--hidden');
+          }
         }
+      });
+    }
+    if (otherText) document.getElementById('other-text').value = otherText;
+  }
+
+  if (isPerChild) {
+    var effectiveIdx = nextNeedingDaytimeDaysPC(childIdx);
+    if (effectiveIdx === -1) {
+      window.location.replace('get-between-households.html');
+      return;
+    }
+    if (effectiveIdx !== childIdx) {
+      window.location.replace('which-days-daytime-visits.html?perchild=1&child=' + effectiveIdx);
+      return;
+    }
+
+    if (childCount > 1) {
+      captionEl.textContent = 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Living and visiting';
+    }
+    headingEl.textContent = 'On which days will daytime visits happen?';
+    backLink.href = childIdx === 0 ? 'which-days-daytime-visits.html' : 'which-days-daytime-visits.html?perchild=1&child=' + (childIdx - 1);
+
+    var savedPC = (getD3Question('whichDaysDaytimeVisits').perChildAnswers || [])[childIdx] || {};
+    restoreCheckboxes(savedPC.days, savedPC.other);
+
+    function saveAndNavigatePC(days, otherText) {
+      setD3PerChildAnswer('whichDaysDaytimeVisits', childIdx, { days: days, other: otherText });
+      var next = nextNeedingDaytimeDaysPC(childIdx + 1);
+      if (next !== -1) {
+        window.location.href = 'which-days-daytime-visits.html?perchild=1&child=' + next;
+      } else {
+        window.location.href = 'get-between-households.html';
       }
     }
-    if (saved.other) document.getElementById('other-text').value = saved.other;
+
+    document.getElementById('continue-btn').addEventListener('click', function (e) {
+      e.preventDefault();
+      var checked = document.querySelectorAll('input[name="whichDaysDaytimeVisits"]:checked');
+      var checkboxGroup = document.getElementById('form-group-checkboxes');
+      var checkboxError = document.getElementById('checkbox-error');
+      checkboxGroup.classList.remove('govuk-form-group--error');
+      checkboxError.style.display = 'none';
+      if (checked.length === 0) {
+        checkboxGroup.classList.add('govuk-form-group--error');
+        checkboxError.style.display = '';
+        return;
+      }
+      var days = Array.from(checked).map(function (cb) { return cb.value; });
+      saveAndNavigatePC(days, document.getElementById('other-text').value.trim());
+    });
+
+    document.getElementById('skip-link').addEventListener('click', function (e) {
+      e.preventDefault();
+      saveAndNavigatePC([], '');
+    });
+
   } else {
-    headingEl.textContent = 'How will the children get between households?';
-    document.getElementById('label-parent1Collects').textContent = escHtml(parent1Name) + ' collects the children';
-    document.getElementById('label-parent2Collects').textContent = escHtml(parent2Name) + ' collects the children';
-    // Back link goes to last L&V page the user would have come from
-    var lvDaytime = getD3Question('willDaytimeVisitsHappen');
-    var daytimeHadYes = (lvDaytime.mode === 'all' && lvDaytime.allAnswer === 'Yes') ||
-      (lvDaytime.mode === 'perChild' && (lvDaytime.perChildAnswers || []).some(function(a) { return a === 'Yes'; }));
-    backLink.href = 'task-list.html';
+    if (childCount > 1) captionEl.textContent = 'Living and visiting';
+    headingEl.textContent = 'On which days will daytime visits happen?';
+    backLink.href = 'will-daytime-visits-happen.html';
 
     if (childCount >= 2) {
       document.getElementById('section-per-child-option').style.display = '';
       var specifyRadioEl = document.getElementById('specify-per-child');
-      document.querySelectorAll('input[name="getBetweenHouseholds"]').forEach(function(r) {
-        r.addEventListener('change', function() { specifyRadioEl.checked = false; });
+      document.querySelectorAll('input[name="whichDaysDaytimeVisits"]').forEach(function(cb) {
+        cb.addEventListener('change', function() { specifyRadioEl.checked = false; });
       });
       specifyRadioEl.addEventListener('change', function() {
-        document.querySelectorAll('input[name="getBetweenHouseholds"]').forEach(function(r) { r.checked = false; });
+        document.querySelectorAll('input[name="whichDaysDaytimeVisits"]').forEach(function(cb) { cb.checked = false; });
         var cond = document.getElementById('conditional-other');
-        if (cond) cond.classList.add('govuk-radios__conditional--hidden');
+        if (cond) cond.classList.add('govuk-checkboxes__conditional--hidden');
       });
     }
 
-    var q = getD3Question('getBetweenHouseholds');
+    var q = getD3Question('whichDaysDaytimeVisits');
     if (q.mode === 'all' && q.allAnswer) {
-      var r = document.querySelector('input[name="getBetweenHouseholds"][value="' + q.allAnswer.answer + '"]');
-      if (r) {
-        r.checked = true;
-        if (q.allAnswer.answer === 'other') {
-          var cond = document.getElementById('conditional-other');
-          if (cond) cond.classList.remove('govuk-radios__conditional--hidden');
-        }
-      }
-      if (q.allAnswer.other) document.getElementById('other-text').value = q.allAnswer.other;
+      restoreCheckboxes(q.allAnswer.days, q.allAnswer.other);
     }
-  }
 
-  document.getElementById('continue-btn').addEventListener('click', function (e) {
-    e.preventDefault();
-    var selectedRadio = document.querySelector('input[name="getBetweenHouseholds"]:checked');
-    var radioGroup = document.getElementById('form-group-radio');
-    var radioError = document.getElementById('radio-error');
-    var otherTextGroup = document.getElementById('form-group-other-text');
-    var otherTextError = document.getElementById('other-text-error');
-    var otherText = document.getElementById('other-text').value.trim();
+    function saveAndNavigateAll(days, otherText) {
+      setD3AllAnswer('whichDaysDaytimeVisits', { days: days, other: otherText });
+      window.location.href = 'get-between-households.html';
+    }
 
-    if (!isPerChild) {
+    document.getElementById('continue-btn').addEventListener('click', function (e) {
+      e.preventDefault();
       var specifyRadio = document.getElementById('specify-per-child');
       if (specifyRadio && specifyRadio.checked) {
-        window.location.href = 'get-between-households.html?perchild=1&child=0';
+        window.location.href = 'which-days-daytime-visits.html?perchild=1&child=0';
         return;
       }
-    }
-
-    radioGroup.classList.remove('govuk-form-group--error');
-    radioError.style.display = 'none';
-    if (otherTextGroup) { otherTextGroup.classList.remove('govuk-form-group--error'); otherTextError.style.display = 'none'; }
-    document.getElementById('other-text').classList.remove('govuk-textarea--error');
-
-    if (!selectedRadio) {
-      radioGroup.classList.add('govuk-form-group--error');
-      radioError.style.display = '';
-      return;
-    }
-    if (selectedRadio.value === 'other' && !otherText) {
-      if (otherTextGroup) otherTextGroup.classList.add('govuk-form-group--error');
-      otherTextError.style.display = '';
-      document.getElementById('other-text').classList.add('govuk-textarea--error');
-      return;
-    }
-
-    var answer = { answer: selectedRadio.value, other: selectedRadio.value === 'other' ? otherText : '' };
-
-    if (isPerChild) {
-      setD3PerChildAnswer('getBetweenHouseholds', childIdx, answer);
-      if (childIdx < lastChild) {
-        window.location.href = 'get-between-households.html?perchild=1&child=' + (childIdx + 1);
-      } else {
-        window.location.href = 'where-handover.html';
+      var checked = document.querySelectorAll('input[name="whichDaysDaytimeVisits"]:checked');
+      var checkboxGroup = document.getElementById('form-group-checkboxes');
+      var checkboxError = document.getElementById('checkbox-error');
+      checkboxGroup.classList.remove('govuk-form-group--error');
+      checkboxError.style.display = 'none';
+      if (checked.length === 0) {
+        checkboxGroup.classList.add('govuk-form-group--error');
+        checkboxError.style.display = '';
+        return;
       }
-    } else {
-      setD3AllAnswer('getBetweenHouseholds', answer);
-      window.location.href = 'where-handover.html';
-    }
-  });
+      var days = Array.from(checked).map(function (cb) { return cb.value; });
+      saveAndNavigateAll(days, document.getElementById('other-text').value.trim());
+    });
 
-  document.getElementById('skip-link').addEventListener('click', function (e) {
-    e.preventDefault();
-    var skipAnswer = { answer: 'skip', other: '' };
-    if (isPerChild) {
-      setD3PerChildAnswer('getBetweenHouseholds', childIdx, skipAnswer);
-      if (childIdx < lastChild) {
-        window.location.href = 'get-between-households.html?perchild=1&child=' + (childIdx + 1);
-      } else {
-        window.location.href = 'where-handover.html';
-      }
-    } else {
-      setD3AllAnswer('getBetweenHouseholds', skipAnswer);
-      window.location.href = 'where-handover.html';
-    }
-  });
+    document.getElementById('skip-link').addEventListener('click', function (e) {
+      e.preventDefault();
+      saveAndNavigateAll([], '');
+    });
+  }
 })();
 </script>
 </body>

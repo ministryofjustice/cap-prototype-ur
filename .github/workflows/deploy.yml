@@ -77,11 +77,6 @@ jobs:
           kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
           kubectl config use-context ${KUBE_CLUSTER}
 
-      - name: 'Delete stale ingress (one-time fix for redirect extraction)'
-        if: inputs.environment == 'production'
-        run: |
-          kubectl delete ingress ${KUBE_NAMESPACE}-ingress -n ${KUBE_NAMESPACE} --ignore-not-found
-
       - name: 'Apply manifest files'
         run: |
           kubectl apply -f deploy/${{ inputs.environment }} -n ${KUBE_NAMESPACE}
@@ -98,7 +93,6 @@ jobs:
           case "${{ inputs.environment }}" in
             development) TAG="dev-v${VERSION}-${{ github.run_number }}" ;;
             staging) TAG="staging-v${VERSION}" ;;
-            production) TAG="v${VERSION}" ;;
             *) TAG="${{ inputs.environment }}-v${VERSION}-${{ github.run_number }}" ;;
           esac
 

@@ -10,7 +10,7 @@ import { config as tslintConfig, configs as tslintConfigs } from 'typescript-esl
 
 export default tslintConfig(
   {
-    ignores: ['dist/**', 'scripts/**', 'server/__tests__/scripts/**', 'playwright-report/**', 'test-results/**'],
+    ignores: ['dist/**', 'scripts/**', 'server/__tests__/scripts/**', 'playwright-report/**', 'test-results/**', 'docs/assets/all.bundle.js'],
   },
   eslint.configs.recommended,
   tslintConfigs.recommended,
@@ -32,7 +32,7 @@ export default tslintConfig(
     ...importPlugin.flatConfigs.recommended,
   },
   {
-    files: ['assets/**/*.js'],
+    files: ['assets/**/*.js', 'docs/assets/**/*.js'],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -74,6 +74,7 @@ export default tslintConfig(
           },
         },
       ],
+      'no-empty': ['error', { allowEmptyCatch: true }],
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
@@ -89,6 +90,14 @@ export default tslintConfig(
       'no-only-tests/no-only-tests': 'error',
       'jest/valid-title': 'off',
       'jest/expect-expect': 'off',
+    },
+  },
+  {
+    // Browser-global scripts used via <script> tags in HTML — functions are consumed
+    // externally so unused-vars checks are not meaningful here
+    files: ['assets/js/*.js', 'docs/assets/js/*.js'],
+    rules: {
+      'unused-imports/no-unused-vars': 'off',
     },
   },
 );

@@ -98,7 +98,7 @@ function setupPerChildAnswers() {
         });
         // Re-initialize GOV.UK checkboxes
         if (window.GOVUKFrontend && window.GOVUKFrontend.Checkboxes) {
-          try { new window.GOVUKFrontend.Checkboxes(checkboxContainer).init(); } catch(e) {}
+          try { new window.GOVUKFrontend.Checkboxes(checkboxContainer).init(); } catch {}
         }
       }
 

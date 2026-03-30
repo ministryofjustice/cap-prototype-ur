@@ -60,8 +60,6 @@ const taskListRoutes = (router: Router) => {
     // Determine which design mode we're in (default to design1)
     const designMode = perChildDesignMode || 'design1';
     const isDesign2Mode = designMode === 'design2' && numberOfChildren > 1;
-    const isDesign3Mode = designMode === 'design3';
-    const isDesign4Mode = designMode === 'design4';
 
     // Design 1: Check completion status from main session
     const isMostlyLiveComplete = mostlyLiveComplete(request.session);

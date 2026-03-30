@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import { HowChangeDuringSchoolHolidaysAnswer } from '../../@types/session';
+import { CAPSession, HowChangeDuringSchoolHolidaysAnswer } from '../../@types/session';
 import formFields from '../../constants/formFields';
 import FORM_STEPS from '../../constants/formSteps';
 import paths from '../../constants/paths';
@@ -30,7 +30,7 @@ const howChangeDuringSchoolHolidaysRoutes = (router: Router) => {
     const isD2 = isDesign2(request.session);
     const activeChildIndex = isD2 ? (request.session.currentChildIndex ?? 0) : 0;
     const activeChildName = isD2 ? namesOfChildren[activeChildIndex] : null;
-    const sessionHAH = isD2 ? getSessionValue<any>(request.session, 'handoverAndHolidays') as typeof handoverAndHolidays : handoverAndHolidays;
+    const sessionHAH = isD2 ? getSessionValue<CAPSession['handoverAndHolidays']>(request.session, 'handoverAndHolidays') : handoverAndHolidays;
     const existingAnswers = sessionHAH?.howChangeDuringSchoolHolidays;
 
     // Build form values from existing session data
@@ -120,7 +120,7 @@ const howChangeDuringSchoolHolidaysRoutes = (router: Router) => {
     (request, response) => {
       // Design 3: handle "specify per child" - switch to per-child (Design 2) mode
       if (isDesign3(request.session) && request.body['specify-per-child'] === 'yes') {
-        request.session.perChildDesignMode = 'design2' as any;
+        request.session.perChildDesignMode = 'design2';
         request.session.currentChildIndex = 0;
         if (!request.session.childPlans || request.session.childPlans.length === 0) {
           request.session.childPlans = (request.session.namesOfChildren || []).map((name: string, index: number) => ({
@@ -199,7 +199,7 @@ const howChangeDuringSchoolHolidaysRoutes = (router: Router) => {
       };
 
       if (isDesign2(request.session)) {
-        const currentHAH = getSessionValue<any>(request.session, 'handoverAndHolidays') || {};
+        const currentHAH = getSessionValue<CAPSession['handoverAndHolidays']>(request.session, 'handoverAndHolidays') || {};
         setSessionSection(request.session, 'handoverAndHolidays', { ...currentHAH, howChangeDuringSchoolHolidays: newHowChange });
       } else {
         request.session.handoverAndHolidays = {
@@ -216,7 +216,7 @@ const howChangeDuringSchoolHolidaysRoutes = (router: Router) => {
           for (let i = 0; i < numberOfChildren; i++) {
             if (i !== savedIndex) {
               request.session.currentChildIndex = i;
-              const childHAH = getSessionValue<any>(request.session, 'handoverAndHolidays') || {};
+              const childHAH = getSessionValue<CAPSession['handoverAndHolidays']>(request.session, 'handoverAndHolidays') || {};
               setSessionSection(request.session, 'handoverAndHolidays', { ...childHAH, howChangeDuringSchoolHolidays: newHowChange });
             }
           }

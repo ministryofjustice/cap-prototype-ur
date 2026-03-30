@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import { WhatWillHappenAnswer } from '../../@types/session';
+import { CAPSession, WhatWillHappenAnswer } from '../../@types/session';
 import formFields from '../../constants/formFields';
 import FORM_STEPS from '../../constants/formSteps';
 import paths from '../../constants/paths';
@@ -30,7 +30,7 @@ const whatWillHappenRoutes = (router: Router) => {
     const isD2 = isDesign2(request.session);
     const activeChildIndex = isD2 ? (request.session.currentChildIndex ?? 0) : 0;
     const activeChildName = isD2 ? namesOfChildren[activeChildIndex] : null;
-    const sessionSpecialDays = isD2 ? getSessionValue<any>(request.session, 'specialDays') as typeof specialDays : specialDays;
+    const sessionSpecialDays = isD2 ? getSessionValue<CAPSession['specialDays']>(request.session, 'specialDays') : specialDays;
     const existingAnswers = sessionSpecialDays?.whatWillHappen;
 
     // Build form values from existing session data
@@ -117,7 +117,7 @@ const whatWillHappenRoutes = (router: Router) => {
     (request, response) => {
       // Design 3: handle "specify per child" - switch to per-child (Design 2) mode
       if (isDesign3(request.session) && request.body['specify-per-child'] === 'yes') {
-        request.session.perChildDesignMode = 'design2' as any;
+        request.session.perChildDesignMode = 'design2';
         request.session.currentChildIndex = 0;
         if (!request.session.childPlans || request.session.childPlans.length === 0) {
           request.session.childPlans = (request.session.namesOfChildren || []).map((name: string, index: number) => ({
@@ -196,7 +196,7 @@ const whatWillHappenRoutes = (router: Router) => {
       };
 
       if (isDesign2(request.session)) {
-        const currentSpecialDays = getSessionValue<any>(request.session, 'specialDays') || {};
+        const currentSpecialDays = getSessionValue<CAPSession['specialDays']>(request.session, 'specialDays') || {};
         setSessionSection(request.session, 'specialDays', { ...currentSpecialDays, whatWillHappen: newWhatWillHappen });
       } else {
         request.session.specialDays = {
@@ -213,7 +213,7 @@ const whatWillHappenRoutes = (router: Router) => {
           for (let i = 0; i < numberOfChildren; i++) {
             if (i !== savedIndex) {
               request.session.currentChildIndex = i;
-              const childSpecialDays = getSessionValue<any>(request.session, 'specialDays') || {};
+              const childSpecialDays = getSessionValue<CAPSession['specialDays']>(request.session, 'specialDays') || {};
               setSessionSection(request.session, 'specialDays', { ...childSpecialDays, whatWillHappen: newWhatWillHappen });
             }
           }

@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>How will the children get between households? – Design 3</title>
+  <title>Where will the children mostly live? – Design 3</title>
   <link rel="stylesheet" href="../assets/govuk-frontend.min.css">
   <link rel="preload" href="../assets/fonts/light-94a07e06a1-v2.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/bold-b542beb274-v2.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="prefetch" href="where-handover.html">
+  <link rel="prefetch" href="which-schedule.html">
+  <link rel="prefetch" href="will-overnights-happen.html">
 </head>
 <body class="govuk-template__body"><script>document.body.classList.add('govuk-frontend-supported')</script>
 
@@ -44,23 +45,27 @@
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <span class="govuk-caption-l" id="page-caption"></span>
-                <h1 class="govuk-fieldset__heading" id="page-heading">How will the children get between households?</h1>
+                <h1 class="govuk-fieldset__heading" id="page-heading">Where will the children mostly live?</h1>
               </legend>
               <div id="radio-error" class="govuk-error-message" style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span>
-                <span id="radio-error-text">Select how the children get between households</span>
+                <span id="radio-error-text">Select where the children will mostly live</span>
               </div>
               <div class="govuk-radios" data-module="govuk-radios" id="radio-group">
                 <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="parent1Collects" name="getBetweenHouseholds" type="radio" value="parent1Collects">
-                  <label class="govuk-label govuk-radios__label" for="parent1Collects" id="label-parent1Collects">Parent 1 collects the children</label>
+                  <input class="govuk-radios__input" id="withParent1" name="mostlyLive" type="radio" value="withParent1">
+                  <label class="govuk-label govuk-radios__label" for="withParent1" id="label-withParent1">With Parent 1</label>
                 </div>
                 <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="parent2Collects" name="getBetweenHouseholds" type="radio" value="parent2Collects">
-                  <label class="govuk-label govuk-radios__label" for="parent2Collects" id="label-parent2Collects">Parent 2 collects the children</label>
+                  <input class="govuk-radios__input" id="withParent2" name="mostlyLive" type="radio" value="withParent2">
+                  <label class="govuk-label govuk-radios__label" for="withParent2" id="label-withParent2">With Parent 2</label>
                 </div>
                 <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="other" name="getBetweenHouseholds" type="radio" value="other" data-aria-controls="conditional-other">
+                  <input class="govuk-radios__input" id="split" name="mostlyLive" type="radio" value="split">
+                  <label class="govuk-label govuk-radios__label" for="split" id="label-split">Time split between Parent 1's and Parent 2's homes</label>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="other" name="mostlyLive" type="radio" value="other" data-aria-controls="conditional-other">
                   <label class="govuk-label govuk-radios__label" for="other">Another arrangement</label>
                 </div>
                 <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-other">
@@ -93,7 +98,7 @@
         </form>
       </div>
     </div>
-</main>
+  </main>
 </div>
 
 <footer class="govuk-footer">
@@ -135,19 +140,27 @@
   var headingEl = document.getElementById('page-heading');
   var backLink = document.getElementById('back-link');
 
+  function anyAnswerIs(qKey, value) {
+    var q = getD3Question(qKey);
+    if (q.mode === 'all') return q.allAnswer && q.allAnswer.answer === value;
+    if (q.mode === 'perChild') return (q.perChildAnswers || []).some(function(a) { return a && a.answer === value; });
+    return false;
+  }
+
   if (isPerChild) {
     if (childCount > 1) {
-      captionEl.textContent = 'Child ' + (childIdx + 1) + ' of ' + childCount;
+      captionEl.textContent = 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Living and visiting';
     }
-    headingEl.textContent = 'How will ' + escHtml(childName) + ' get between households?';
-    document.getElementById('label-parent1Collects').textContent = escHtml(parent1Name) + ' collects ' + escHtml(childName);
-    document.getElementById('label-parent2Collects').textContent = escHtml(parent2Name) + ' collects ' + escHtml(childName);
-    backLink.href = childIdx === 0 ? 'get-between-households.html' : 'get-between-households.html?perchild=1&child=' + (childIdx - 1);
+    headingEl.textContent = 'Where will ' + escHtml(childName) + ' mostly live?';
+    document.getElementById('label-withParent1').textContent = 'With ' + escHtml(parent1Name);
+    document.getElementById('label-withParent2').textContent = 'With ' + escHtml(parent2Name);
+    document.getElementById('label-split').textContent = 'Time split between ' + escHtml(parent1Name) + '\u2019s and ' + escHtml(parent2Name) + '\u2019s homes';
+    backLink.href = childIdx === 0 ? 'mostly-live.html' : 'mostly-live.html?perchild=1&child=' + (childIdx - 1);
 
-    var q = getD3Question('getBetweenHouseholds');
+    var q = getD3Question('mostlyLive');
     var saved = ((q.perChildAnswers || [])[childIdx]) || {};
     if (saved.answer) {
-      var r = document.querySelector('input[name="getBetweenHouseholds"][value="' + saved.answer + '"]');
+      var r = document.querySelector('input[name="mostlyLive"][value="' + saved.answer + '"]');
       if (r) {
         r.checked = true;
         if (saved.answer === 'other') {
@@ -158,31 +171,31 @@
     }
     if (saved.other) document.getElementById('other-text').value = saved.other;
   } else {
-    headingEl.textContent = 'How will the children get between households?';
-    document.getElementById('label-parent1Collects').textContent = escHtml(parent1Name) + ' collects the children';
-    document.getElementById('label-parent2Collects').textContent = escHtml(parent2Name) + ' collects the children';
-    // Back link goes to last L&V page the user would have come from
-    var lvDaytime = getD3Question('willDaytimeVisitsHappen');
-    var daytimeHadYes = (lvDaytime.mode === 'all' && lvDaytime.allAnswer === 'Yes') ||
-      (lvDaytime.mode === 'perChild' && (lvDaytime.perChildAnswers || []).some(function(a) { return a === 'Yes'; }));
+    if (childCount > 1) {
+      captionEl.textContent = 'Living and visiting';
+    }
+    headingEl.textContent = 'Where will the children mostly live?';
+    document.getElementById('label-withParent1').textContent = 'With ' + escHtml(parent1Name);
+    document.getElementById('label-withParent2').textContent = 'With ' + escHtml(parent2Name);
+    document.getElementById('label-split').textContent = 'Time split between ' + escHtml(parent1Name) + '\u2019s and ' + escHtml(parent2Name) + '\u2019s homes';
     backLink.href = 'task-list.html';
 
     if (childCount >= 2) {
       document.getElementById('section-per-child-option').style.display = '';
       var specifyRadioEl = document.getElementById('specify-per-child');
-      document.querySelectorAll('input[name="getBetweenHouseholds"]').forEach(function(r) {
+      document.querySelectorAll('input[name="mostlyLive"]').forEach(function(r) {
         r.addEventListener('change', function() { specifyRadioEl.checked = false; });
       });
       specifyRadioEl.addEventListener('change', function() {
-        document.querySelectorAll('input[name="getBetweenHouseholds"]').forEach(function(r) { r.checked = false; });
+        document.querySelectorAll('input[name="mostlyLive"]').forEach(function(r) { r.checked = false; });
         var cond = document.getElementById('conditional-other');
         if (cond) cond.classList.add('govuk-radios__conditional--hidden');
       });
     }
 
-    var q = getD3Question('getBetweenHouseholds');
+    var q = getD3Question('mostlyLive');
     if (q.mode === 'all' && q.allAnswer) {
-      var r = document.querySelector('input[name="getBetweenHouseholds"][value="' + q.allAnswer.answer + '"]');
+      var r = document.querySelector('input[name="mostlyLive"][value="' + q.allAnswer.answer + '"]');
       if (r) {
         r.checked = true;
         if (q.allAnswer.answer === 'other') {
@@ -196,7 +209,7 @@
 
   document.getElementById('continue-btn').addEventListener('click', function (e) {
     e.preventDefault();
-    var selectedRadio = document.querySelector('input[name="getBetweenHouseholds"]:checked');
+    var selectedRadio = document.querySelector('input[name="mostlyLive"]:checked');
     var radioGroup = document.getElementById('form-group-radio');
     var radioError = document.getElementById('radio-error');
     var otherTextGroup = document.getElementById('form-group-other-text');
@@ -206,7 +219,7 @@
     if (!isPerChild) {
       var specifyRadio = document.getElementById('specify-per-child');
       if (specifyRadio && specifyRadio.checked) {
-        window.location.href = 'get-between-households.html?perchild=1&child=0';
+        window.location.href = 'mostly-live.html?perchild=1&child=0';
         return;
       }
     }
@@ -231,15 +244,36 @@
     var answer = { answer: selectedRadio.value, other: selectedRadio.value === 'other' ? otherText : '' };
 
     if (isPerChild) {
-      setD3PerChildAnswer('getBetweenHouseholds', childIdx, answer);
+      setD3PerChildAnswer('mostlyLive', childIdx, answer);
       if (childIdx < lastChild) {
-        window.location.href = 'get-between-households.html?perchild=1&child=' + (childIdx + 1);
+        // Navigate per-child: if this child is split, go to which-schedule for them, else next child
+        if (answer.answer === 'split') {
+          window.location.href = 'which-schedule.html?perchild=1&child=' + childIdx;
+        } else {
+          window.location.href = 'mostly-live.html?perchild=1&child=' + (childIdx + 1);
+        }
       } else {
-        window.location.href = 'where-handover.html';
+        // Last child done
+        var anyNeedSchedule = false;
+        for (var i = 0; i <= lastChild; i++) {
+          var q2 = getD3Question('mostlyLive');
+          var a2 = ((q2.perChildAnswers || [])[i]) || {};
+          if (i === childIdx) a2 = answer;
+          if (a2.answer === 'split') { anyNeedSchedule = true; break; }
+        }
+        if (anyNeedSchedule) {
+          window.location.href = 'which-schedule.html?perchild=1&child=0';
+        } else {
+          window.location.href = 'will-overnights-happen.html';
+        }
       }
     } else {
-      setD3AllAnswer('getBetweenHouseholds', answer);
-      window.location.href = 'where-handover.html';
+      setD3AllAnswer('mostlyLive', answer);
+      if (answer.answer === 'split') {
+        window.location.href = 'which-schedule.html';
+      } else {
+        window.location.href = 'will-overnights-happen.html';
+      }
     }
   });
 
@@ -247,15 +281,15 @@
     e.preventDefault();
     var skipAnswer = { answer: 'skip', other: '' };
     if (isPerChild) {
-      setD3PerChildAnswer('getBetweenHouseholds', childIdx, skipAnswer);
+      setD3PerChildAnswer('mostlyLive', childIdx, skipAnswer);
       if (childIdx < lastChild) {
-        window.location.href = 'get-between-households.html?perchild=1&child=' + (childIdx + 1);
+        window.location.href = 'mostly-live.html?perchild=1&child=' + (childIdx + 1);
       } else {
-        window.location.href = 'where-handover.html';
+        window.location.href = 'will-overnights-happen.html';
       }
     } else {
-      setD3AllAnswer('getBetweenHouseholds', skipAnswer);
-      window.location.href = 'where-handover.html';
+      setD3AllAnswer('mostlyLive', skipAnswer);
+      window.location.href = 'will-overnights-happen.html';
     }
   });
 })();

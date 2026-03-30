@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>How will the arrangements change during school holidays? – Design 3</title>
+  <title>Describe the schedule – Design 3</title>
   <link rel="stylesheet" href="../assets/govuk-frontend.min.css">
   <link rel="preload" href="../assets/fonts/light-94a07e06a1-v2.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/bold-b542beb274-v2.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="prefetch" href="items-for-changeover.html">
+  <link rel="prefetch" href="will-overnights-happen.html">
 </head>
 <body class="govuk-template__body"><script>document.body.classList.add('govuk-frontend-supported')</script>
 
@@ -34,34 +34,38 @@
     </p>
   </div>
 
-  <a href="#" class="govuk-back-link" id="back-link">Back</a>
+  <a href="mostly-live.html" class="govuk-back-link" id="back-link">Back</a>
 
   <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <form id="page-form" novalidate>
+
+          <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--l" for="schedule-text">
+              <span class="govuk-caption-l" id="page-caption">Living and visiting</span>
+              <span id="page-heading">Describe the schedule</span>
+            </label>
+          </h1>
+          <div class="govuk-hint" id="page-hint">Describe how time will be shared between the two homes.</div>
+
           <div class="govuk-form-group" id="form-group-textarea">
-            <h1 class="govuk-label-wrapper">
-              <span class="govuk-caption-l" id="page-caption"></span>
-              <label class="govuk-label govuk-label--l" for="how-change-text" id="page-heading">
-                How will the arrangements be different in school holidays?
-              </label>
-            </h1>
-            <div class="govuk-hint">School holidays include half terms, bank holidays and inset days.</div>
             <div id="textarea-error" class="govuk-error-message" style="display:none;">
-              <span class="govuk-visually-hidden">Error:</span>Enter details of how arrangements will be different during school holidays
+              <span class="govuk-visually-hidden">Error:</span>
+              Enter details of the schedule
             </div>
-            <textarea class="govuk-textarea" id="how-change-text" name="how-change-text" rows="6"></textarea>
+            <textarea class="govuk-textarea" id="schedule-text" name="schedule-text" rows="5"></textarea>
           </div>
           <p class="govuk-body"><a class="govuk-link" href="#" id="skip-link">Skip this question</a></p>
 
-          <div class="govuk-button-group">
-            <button class="govuk-button" data-module="govuk-button" id="continue-btn" type="button">Continue</button>
+          <div class="govuk-button-group govuk-!-margin-top-4">
+            <button class="govuk-button" id="continue-btn" type="button">Continue</button>
           </div>
+
         </form>
       </div>
     </div>
-</main>
+  </main>
 </div>
 
 <footer class="govuk-footer">
@@ -83,9 +87,16 @@
 <script src="../assets/js/state.js"></script>
 <script>
 (function () {
-  function escHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  function needsSchedule() {
+    var q = getD3Question('mostlyLive');
+    if (q.mode === 'all') return q.allAnswer && q.allAnswer.answer === 'split';
+    if (q.mode === 'perChild') return (q.perChildAnswers || []).some(function(a) { return a && a.answer === 'split'; });
+    return false;
+  }
+
+  if (!needsSchedule()) {
+    window.location.replace('will-overnights-happen.html');
+    return;
   }
 
   var params = new URLSearchParams(window.location.search);
@@ -93,82 +104,102 @@
   var childIdx = parseInt(params.get('child') || '0', 10);
   var names = getNames();
   var children = names.children || [];
-  var lastChild = children.length - 1;
   var childCount = children.length;
-  var childName = children[childIdx] || 'the child';
-
-  var captionEl = document.getElementById('page-caption');
-  var headingEl = document.getElementById('page-heading');
-  var backLink = document.getElementById('back-link');
 
   if (isPerChild) {
-    if (childCount > 1) captionEl.textContent = 'Child ' + (childIdx + 1) + ' of ' + childCount;
-    headingEl.textContent = 'How will ' + escHtml(childName) + '\u2019s arrangements be different in school holidays?';
-    backLink.href = 'will-change-during-holidays.html?perchild=1&child=' + childIdx;
-
-    var q = getD3Question('howChangeDuringHolidays');
-    var saved = ((q.perChildAnswers || [])[childIdx]) || {};
-    if (saved.text && saved.text !== 'skip') document.getElementById('how-change-text').value = saved.text;
-  } else {
-    headingEl.textContent = 'How will the arrangements be different in school holidays?';
-    backLink.href = 'will-change-during-holidays.html';
-
-    var q = getD3Question('howChangeDuringHolidays');
-    if (q.mode === 'all' && q.allAnswer && q.allAnswer.text !== 'skip') {
-      document.getElementById('how-change-text').value = q.allAnswer.text || '';
-    }
-  }
-
-  function afterSave() {
-    if (isPerChild) {
-      // Go to Q3 for next child, or Q5 if last child
-      if (childIdx < lastChild) {
-        window.location.href = 'will-change-during-holidays.html?perchild=1&child=' + (childIdx + 1);
-      } else {
-        window.location.href = 'items-for-changeover.html';
+    // Find next child needing schedule
+    function nextNeedingSchedulePC(startIdx) {
+      for (var i = startIdx; i < childCount; i++) {
+        var q = getD3Question('mostlyLive');
+        var a = ((q.perChildAnswers || [])[i]) || {};
+        if (a.answer === 'split') return i;
       }
-    } else {
-      window.location.href = 'items-for-changeover.html';
+      return -1;
     }
-  }
 
-  document.getElementById('continue-btn').addEventListener('click', function (e) {
-    e.preventDefault();
-    var text = document.getElementById('how-change-text').value.trim();
-    var formGroup = document.getElementById('form-group-textarea');
-    var textareaError = document.getElementById('textarea-error');
-    var textarea = document.getElementById('how-change-text');
-
-    formGroup.classList.remove('govuk-form-group--error');
-    textareaError.style.display = 'none';
-    textarea.classList.remove('govuk-textarea--error');
-
-    if (!text) {
-      formGroup.classList.add('govuk-form-group--error');
-      textareaError.style.display = '';
-      textarea.classList.add('govuk-textarea--error');
+    var effectiveIdx = nextNeedingSchedulePC(childIdx);
+    if (effectiveIdx === -1) {
+      window.location.replace('will-overnights-happen.html');
+      return;
+    }
+    if (effectiveIdx !== childIdx) {
+      window.location.replace('which-schedule.html?perchild=1&child=' + effectiveIdx);
       return;
     }
 
-    var answer = { text: text };
-    if (isPerChild) {
-      setD3PerChildAnswer('howChangeDuringHolidays', childIdx, answer);
-    } else {
-      setD3AllAnswer('howChangeDuringHolidays', answer);
-    }
-    afterSave();
-  });
+    var childName = children[childIdx] || 'the child';
+    document.getElementById('page-caption').textContent = childCount > 1
+      ? 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Living and visiting'
+      : 'Living and visiting';
+    document.getElementById('page-heading').textContent = 'Describe ' + childName + '\u2019s schedule';
+    document.getElementById('back-link').href = childIdx === 0 ? 'mostly-live.html?perchild=1&child=0' : 'which-schedule.html?perchild=1&child=' + (childIdx - 1);
 
-  document.getElementById('skip-link').addEventListener('click', function (e) {
-    e.preventDefault();
-    var skipAnswer = { text: 'skip' };
-    if (isPerChild) {
-      setD3PerChildAnswer('howChangeDuringHolidays', childIdx, skipAnswer);
-    } else {
-      setD3AllAnswer('howChangeDuringHolidays', skipAnswer);
+    var savedPC = (getD3Question('whichSchedule').perChildAnswers || [])[childIdx] || {};
+    document.getElementById('schedule-text').value = savedPC.text || '';
+
+    function saveAndNavigatePC(text) {
+      setD3PerChildAnswer('whichSchedule', childIdx, { text: text });
+      var next = nextNeedingSchedulePC(childIdx + 1);
+      if (next !== -1) {
+        window.location.href = 'which-schedule.html?perchild=1&child=' + next;
+      } else {
+        window.location.href = 'will-overnights-happen.html';
+      }
     }
-    afterSave();
-  });
+
+    document.getElementById('continue-btn').addEventListener('click', function (e) {
+      e.preventDefault();
+      var text = document.getElementById('schedule-text').value.trim();
+      var formGroup = document.getElementById('form-group-textarea');
+      var textError = document.getElementById('textarea-error');
+      var textarea = document.getElementById('schedule-text');
+      formGroup.classList.remove('govuk-form-group--error');
+      textError.style.display = 'none';
+      textarea.classList.remove('govuk-textarea--error');
+      if (!text) {
+        formGroup.classList.add('govuk-form-group--error');
+        textError.style.display = '';
+        textarea.classList.add('govuk-textarea--error');
+        return;
+      }
+      saveAndNavigatePC(text);
+    });
+
+    document.getElementById('skip-link').addEventListener('click', function (e) {
+      e.preventDefault();
+      saveAndNavigatePC('');
+    });
+
+  } else {
+    var q2 = getD3Question('whichSchedule');
+    var savedAll = (q2.mode === 'all' && q2.allAnswer) ? q2.allAnswer : {};
+    document.getElementById('schedule-text').value = savedAll.text || '';
+
+    document.getElementById('continue-btn').addEventListener('click', function (e) {
+      e.preventDefault();
+      var text = document.getElementById('schedule-text').value.trim();
+      var formGroup = document.getElementById('form-group-textarea');
+      var textError = document.getElementById('textarea-error');
+      var textarea = document.getElementById('schedule-text');
+      formGroup.classList.remove('govuk-form-group--error');
+      textError.style.display = 'none';
+      textarea.classList.remove('govuk-textarea--error');
+      if (!text) {
+        formGroup.classList.add('govuk-form-group--error');
+        textError.style.display = '';
+        textarea.classList.add('govuk-textarea--error');
+        return;
+      }
+      setD3AllAnswer('whichSchedule', { text: text });
+      window.location.href = 'will-overnights-happen.html';
+    });
+
+    document.getElementById('skip-link').addEventListener('click', function (e) {
+      e.preventDefault();
+      setD3AllAnswer('whichSchedule', { text: '' });
+      window.location.href = 'will-overnights-happen.html';
+    });
+  }
 })();
 </script>
 </body>

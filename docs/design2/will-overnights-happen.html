@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>How will the children get between households? – Design 2</title>
+  <title>Will the child stay overnight? – Design 2</title>
   <link rel="stylesheet" href="../assets/govuk-frontend.min.css">
   <link rel="preload" href="../assets/fonts/light-94a07e06a1-v2.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/bold-b542beb274-v2.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="prefetch" href="where-handover.html">
+  <link rel="prefetch" href="which-days-overnight.html">
+  <link rel="prefetch" href="will-daytime-visits-happen.html">
 </head>
 <body class="govuk-template__body"><script>document.body.classList.add('govuk-frontend-supported')</script>
 
@@ -31,10 +32,9 @@
   <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
       <strong class="govuk-tag govuk-phase-banner__content__tag">Research prototype</strong>
-      <span class="govuk-phase-banner__text">This is a prototype for user research only.</span>
+      <span class="govuk-phase-banner__text">Design 2 – Answer each question for all children in turn</span>
     </p>
   </div>
-
 
   <a href="task-list.html" class="govuk-back-link" id="back-link">Back</a>
 
@@ -48,73 +48,29 @@
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <span class="govuk-caption-l" id="page-caption">Loading…</span>
-                <h1 class="govuk-fieldset__heading" id="page-heading">
-                  How will the children get between households?
-                </h1>
+                <h1 class="govuk-fieldset__heading" id="page-heading">Will the children stay overnight?</h1>
               </legend>
-
               <div id="radio-error" class="govuk-error-message" style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span>
-                <span id="radio-error-text">Select how the children get between households</span>
+                Select yes if the child will stay overnight
               </div>
-
               <div class="govuk-radios" data-module="govuk-radios" id="radio-group">
-
                 <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="parent1Collects" name="getBetweenHouseholds" type="radio" value="parent1Collects">
-                  <label class="govuk-label govuk-radios__label" for="parent1Collects" id="label-parent1Collects">
-                    Parent 1 collects the child
-                  </label>
+                  <input class="govuk-radios__input" id="willOvernights-yes" name="willOvernightsHappen" type="radio" value="Yes">
+                  <label class="govuk-label govuk-radios__label" for="willOvernights-yes">Yes</label>
                 </div>
-
                 <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="parent2Collects" name="getBetweenHouseholds" type="radio" value="parent2Collects">
-                  <label class="govuk-label govuk-radios__label" for="parent2Collects" id="label-parent2Collects">
-                    Parent 2 collects the child
-                  </label>
+                  <input class="govuk-radios__input" id="willOvernights-no" name="willOvernightsHappen" type="radio" value="No">
+                  <label class="govuk-label govuk-radios__label" for="willOvernights-no">No</label>
                 </div>
-
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="other" name="getBetweenHouseholds" type="radio" value="other" data-aria-controls="conditional-other">
-                  <label class="govuk-label govuk-radios__label" for="other">
-                    Another arrangement
-                  </label>
-                </div>
-
-                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-other">
-                  <div class="govuk-form-group" id="form-group-other-text">
-                    <label class="govuk-label" for="other-text">
-                      Describe the arrangement
-                    </label>
-                    <div id="other-text-error" class="govuk-error-message" style="display:none;">
-                      <span class="govuk-visually-hidden">Error:</span>
-                      Enter a description of the arrangement
-                    </div>
-                    <textarea class="govuk-textarea" id="other-text" name="other-text" rows="4"></textarea>
-                  </div>
-                </div>
-
               </div>
             </fieldset>
           </div>
 
-          <div class="govuk-form-group" id="apply-all-group" style="display:none;">
-            <p class="govuk-hint">If this answer is the same for all children:</p>
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="apply-to-all" name="apply-to-all" type="checkbox" value="yes">
-                <label class="govuk-label govuk-checkboxes__label" for="apply-to-all">
-                  Apply to all children
-                </label>
-              </div>
-            </div>
-          </div>
           <p class="govuk-body"><a class="govuk-link" href="#" id="skip-link">Skip this question</a></p>
 
           <div class="govuk-button-group">
-            <button class="govuk-button" data-module="govuk-button" id="continue-btn">
-              Continue
-            </button>
+            <button class="govuk-button" data-module="govuk-button" id="continue-btn">Continue</button>
           </div>
 
         </form>
@@ -143,11 +99,6 @@
 <script src="../assets/js/state.js"></script>
 <script>
 (function () {
-  function escHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  }
-
   var params = new URLSearchParams(window.location.search);
   var childIdx = parseInt(params.get('child') || '0', 10);
   var names = getNames();
@@ -155,97 +106,69 @@
   var lastChild = children.length - 1;
   var childCount = children.length;
   var childName = children[childIdx] || 'the child';
-  var parent1Name = names.parent1 || 'Parent 1';
   var parent2Name = names.parent2 || 'Parent 2';
+  var lvApplyToAll = (getState().design2 || {}).lvApplyToAll || false;
 
-  var captionEl = document.getElementById('page-caption');
-  captionEl.textContent = childCount > 1
-    ? 'Child ' + (childIdx + 1) + ' of ' + childCount + ' – Question 1 of 5'
-    : 'Question 1 of 5';
+  document.getElementById('page-caption').textContent = (lvApplyToAll || childCount < 2) ? 'Question 3 of 6' : 'Child ' + (childIdx + 1) + ' of ' + childCount + ' \u2013 Question 3 of 6';
+  document.getElementById('page-heading').textContent = 'Will ' + (lvApplyToAll ? 'the children' : childName) + ' stay overnight with ' + parent2Name + '?';
+  document.getElementById('back-link').href = childIdx === 0 ? 'task-list.html' : 'will-overnights-happen.html?child=' + (childIdx - 1);
 
-  document.getElementById('page-heading').textContent = 'How will ' + escHtml(childName) + ' get between households?';
-  document.getElementById('label-parent1Collects').textContent = escHtml(parent1Name) + ' collects ' + escHtml(childName);
-  document.getElementById('label-parent2Collects').textContent = escHtml(parent2Name) + ' collects ' + escHtml(childName);
+  var saved = (getChildPlan(childIdx).answers || {}).willOvernightsHappen;
+  if (saved) {
+    var r = document.querySelector('input[name="willOvernightsHappen"][value="' + saved + '"]');
+    if (r) r.checked = true;
+  }
 
-  var backLink = document.getElementById('back-link');
-  backLink.href = childIdx === 0 ? 'task-list.html' : 'get-between-households.html?child=' + (childIdx - 1);
-
-  if (childCount >= 2) { document.getElementById('apply-all-group').style.display = 'block'; }
-
-  var plan = getChildPlan(childIdx);
-  var savedAnswers = (plan && plan.answers) ? plan.answers : {};
-  if (savedAnswers.getBetweenHouseholds) {
-    var val = savedAnswers.getBetweenHouseholds;
-    var radio = document.querySelector('input[name="getBetweenHouseholds"][value="' + val + '"]');
-    if (radio) {
-      radio.checked = true;
-      if (val === 'other') {
-        var cond = document.getElementById('conditional-other');
-        if (cond) cond.classList.remove('govuk-radios__conditional--hidden');
+  function afterAllAnswered(currentChildAnswer) {
+    for (var i = 0; i < childCount; i++) {
+      var ans = i === childIdx ? currentChildAnswer : ((getChildPlan(i).answers || {}).willOvernightsHappen);
+      if (ans === 'Yes') {
+        window.location.href = 'which-days-overnight.html?child=0';
+        return;
       }
     }
-  }
-  if (savedAnswers.getBetweenHouseholdsOther) {
-    document.getElementById('other-text').value = savedAnswers.getBetweenHouseholdsOther;
+    window.location.href = 'will-daytime-visits-happen.html?child=0';
   }
 
-  function navigate(updates) {
-    setChildPlan(childIdx, { answers: updates });
-    if (childIdx < lastChild) {
-      window.location.href = 'get-between-households.html?child=' + (childIdx + 1);
+  function navigate(updates, childI) {
+    if (lvApplyToAll) {
+      applyAnswerToAllChildren(updates);
+      if (updates.willOvernightsHappen === 'Yes') {
+        window.location.href = 'which-days-overnight.html?child=0';
+      } else {
+        window.location.href = 'will-daytime-visits-happen.html?child=0';
+      }
     } else {
-      window.location.href = 'where-handover.html?child=0';
+      setChildPlan(childI, { answers: updates });
+      if (updates.willOvernightsHappen === 'Yes') {
+        window.location.href = 'which-days-overnight.html?child=' + childI;
+      } else if (childI < lastChild) {
+        window.location.href = 'will-overnights-happen.html?child=' + (childI + 1);
+      } else {
+        afterAllAnswered(updates.willOvernightsHappen);
+      }
     }
   }
 
   document.getElementById('continue-btn').addEventListener('click', function (e) {
     e.preventDefault();
-    var selectedRadio = document.querySelector('input[name="getBetweenHouseholds"]:checked');
+    var selected = document.querySelector('input[name="willOvernightsHappen"]:checked');
     var radioGroup = document.getElementById('form-group-radio');
     var radioError = document.getElementById('radio-error');
-    var otherTextGroup = document.getElementById('form-group-other-text');
-    var otherTextError = document.getElementById('other-text-error');
-    var otherText = document.getElementById('other-text').value.trim();
-
     radioGroup.classList.remove('govuk-form-group--error');
     radioError.style.display = 'none';
-    otherTextGroup.classList.remove('govuk-form-group--error');
-    otherTextError.style.display = 'none';
-    document.getElementById('other-text').classList.remove('govuk-textarea--error');
-
-    if (!selectedRadio) {
+    if (!selected) {
       radioGroup.classList.add('govuk-form-group--error');
       radioError.style.display = '';
       return;
     }
-    if (selectedRadio.value === 'other' && !otherText) {
-      otherTextGroup.classList.add('govuk-form-group--error');
-      otherTextError.style.display = '';
-      document.getElementById('other-text').classList.add('govuk-textarea--error');
-      return;
-    }
-
-    var updates = { getBetweenHouseholds: selectedRadio.value };
-    updates.getBetweenHouseholdsOther = selectedRadio.value === 'other' ? otherText : '';
-    var applyAll = document.getElementById('apply-to-all');
-    if (applyAll && applyAll.checked) {
-      applyAnswerToAllChildren(updates);
-      window.location.href = 'where-handover.html?child=0';
-    } else {
-      navigate(updates);
-    }
+    var updates = { willOvernightsHappen: selected.value };
+    navigate(updates, childIdx);
   });
 
   document.getElementById('skip-link').addEventListener('click', function (e) {
     e.preventDefault();
-    var skipUpdates = { getBetweenHouseholds: 'skip', getBetweenHouseholdsOther: '' };
-    var applyAll = document.getElementById('apply-to-all');
-    if (applyAll && applyAll.checked) {
-      applyAnswerToAllChildren(skipUpdates);
-      window.location.href = 'where-handover.html?child=0';
-    } else {
-      navigate(skipUpdates);
-    }
+    navigate({ willOvernightsHappen: 'skip' }, childIdx);
   });
 })();
 </script>

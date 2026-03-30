@@ -8,13 +8,17 @@ Date: 2025-01-27
 
 ## Context
 
-We need somewhere to host the app. It should be reliable, economical, and follow MoJ patterns.
+We need somewhere to host the prototype. It should be reliable and follow MoJ patterns.
 
 ## Considerations
 
-All MoJ and ACE infrastructure is on AWS. This brings a high level of reliability with it, and is not unreasonably
-expensive.
+The prototype has two components with different hosting needs:
+
+**Static prototype (`docs/`)** — a plain HTML/JS site with no server-side requirements. GitHub Pages is the simplest possible option and costs nothing.
+
+**Express server (`server/`)** — requires a Node.js runtime and Redis for session storage. MoJ Cloud Platform (Kubernetes on AWS) is the standard hosting environment across MoJ digital services and is the natural choice. It provides managed infrastructure, consistent deployment patterns, and uses AWS ElastiCache for Redis.
 
 ## Decision
 
-We will host the app on AWS.
+- The static `docs/` prototype is hosted on **GitHub Pages**, deploying automatically from the `main` branch.
+- The Express server is hosted on **MoJ Cloud Platform** (Kubernetes), deployed via GitHub Actions to `development` and `staging` namespaces.

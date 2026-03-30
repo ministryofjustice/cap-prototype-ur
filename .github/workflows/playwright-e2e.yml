@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: 'Environment to test against (development, staging, production)'
+        description: 'Environment to test against (development, staging)'
         required: true
         type: string
       base_url:
@@ -23,7 +23,6 @@ on:
         options:
           - development
           - staging
-          - production
       base_url:
         description: 'Base URL to run tests against'
         required: true
