@@ -107,7 +107,7 @@ test('login test', async ({ page }) => {
   await passwordPage.goto();
   await passwordPage.submitWithPassword('parent-planner');
 
-  await expect(page).toHaveURL(/\/safety-check/);
+  await expect(page).toHaveURL(/\/children/);
 });
 ```
 
