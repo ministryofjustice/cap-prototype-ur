@@ -2,7 +2,6 @@
 {% from "govuk/components/task-list/macro.njk" import govukTaskList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {%
   set completeStatus = {
@@ -68,9 +67,31 @@
         </details>
       {% endif %}
 
-      {# Design 2: Show current child heading #}
+      {# Design 2: Per-child progress #}
       {% if isDesign2 %}
-        <h2 class="govuk-heading-m">Answering for {{ currentChildName }}</h2>
+        <h2 class="govuk-heading-m">Progress for each child</h2>
+        <ul class="govuk-task-list govuk-!-margin-bottom-8" id="children-progress">
+          {% for child in childPlanStatuses %}
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <form method="post" action="{{ paths.SELECT_CHILD }}" style="display:inline;">
+                  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                  <input type="hidden" name="childIndex" value="{{ child.childIndex }}" />
+                  <button type="submit" class="govuk-link govuk-task-list__link" style="background:none;border:none;padding:0;cursor:pointer;" aria-describedby="child-status-{{ loop.index }}">
+                    {{ child.childName }}
+                  </button>
+                </form>
+              </div>
+              <div class="govuk-task-list__status" id="child-status-{{ loop.index }}">
+                {% if child.isComplete %}
+                  Completed
+                {% else %}
+                  <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
       {% endif %}
 
       <h2 class="govuk-heading-m">{{ __('taskList.whoThePlanIsFor') }}</h2>
@@ -217,14 +238,6 @@
         </div>
       {% endif %}
 
-      {# Design 2: Show prompt to complete other children #}
-      {% if isDesign2 and not allChildrenComplete %}
-        <div class="govuk-!-margin-top-6">
-          {{ govukInsetText({
-            text: "Remember to complete the arrangements for all your children before continuing."
-          }) }}
-        </div>
-      {% endif %}
     </div>
   </div>
 {% endblock %}

@@ -5,7 +5,7 @@ import { SessionData } from 'express-session';
 import { CAPSession } from '../@types/session';
 
 import { formatListOfStrings } from './formValueUtils';
-import { getSessionValue } from './perChildSession';
+import { isDesign2, getSessionValue } from './perChildSession';
 import { validateRedirectUrl } from './redirectValidator';
 
 export const formattedChildrenNames = (request: Request) =>
@@ -32,7 +32,24 @@ export const parentNotMostlyLivedWith = (session: Partial<CAPSession>) => {
   return where === 'withInitial' ? session.secondaryAdultName : session.initialAdultName;
 };
 
+const checkAllChildren = (session: Partial<CAPSession>, check: (plan: any) => boolean): boolean => {
+  if (!session.childPlans?.length) return false;
+  return session.childPlans.every(plan => check(plan));
+};
+
 export const mostlyLiveComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => {
+      const lv = plan.livingAndVisiting;
+      if (!lv?.mostlyLive) return false;
+      const where = getMostlyLiveWhere(lv.mostlyLive);
+      if (where === 'other') return true;
+      if (where === 'split') return !!lv.whichSchedule;
+      const overnightComplete = lv.overnightVisits?.willHappen !== undefined && (!lv.overnightVisits.willHappen || !!lv.overnightVisits.whichDays);
+      const daytimeComplete = lv.daytimeVisits?.willHappen !== undefined && (!lv.daytimeVisits.willHappen || !!lv.daytimeVisits.whichDays);
+      return overnightComplete && daytimeComplete;
+    });
+  }
   const livingAndVisiting = getSessionValue<any>(session, 'livingAndVisiting');
   if (!livingAndVisiting?.mostlyLive) return false;
 
@@ -54,16 +71,29 @@ export const mostlyLiveComplete = (session: Partial<CAPSession>) => {
 };
 
 export const getBetweenHouseholdsComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => !!plan.handoverAndHolidays?.getBetweenHouseholds);
+  }
   const handoverAndHolidays = getSessionValue<any>(session, 'handoverAndHolidays');
   return !!handoverAndHolidays?.getBetweenHouseholds;
 };
 
 export const whereHandoverComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => !!plan.handoverAndHolidays?.whereHandover);
+  }
   const handoverAndHolidays = getSessionValue<any>(session, 'handoverAndHolidays');
   return !!handoverAndHolidays?.whereHandover;
 };
 
 export const willChangeDuringSchoolHolidaysComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => {
+      const hah = plan.handoverAndHolidays;
+      if (!hah?.willChangeDuringSchoolHolidays) return false;
+      return !(hah.willChangeDuringSchoolHolidays.willChange && !hah.howChangeDuringSchoolHolidays);
+    });
+  }
   const handoverAndHolidays = getSessionValue<any>(session, 'handoverAndHolidays');
   if (!handoverAndHolidays?.willChangeDuringSchoolHolidays) return false;
 
@@ -73,31 +103,49 @@ export const willChangeDuringSchoolHolidaysComplete = (session: Partial<CAPSessi
 };
 
 export const itemsForChangeoverComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => !!plan.handoverAndHolidays?.itemsForChangeover);
+  }
   const handoverAndHolidays = getSessionValue<any>(session, 'handoverAndHolidays');
   return !!handoverAndHolidays?.itemsForChangeover;
 };
 
 export const whatWillHappenComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => !!plan.specialDays?.whatWillHappen);
+  }
   const specialDays = getSessionValue<any>(session, 'specialDays');
   return !!specialDays?.whatWillHappen;
 };
 
 export const whatOtherThingsMatterComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => !!plan.otherThings?.whatOtherThingsMatter);
+  }
   const otherThings = getSessionValue<any>(session, 'otherThings');
   return !!otherThings?.whatOtherThingsMatter;
 };
 
 export const planLastMinuteChangesComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => !!plan.decisionMaking?.planLastMinuteChanges);
+  }
   const decisionMaking = getSessionValue<any>(session, 'decisionMaking');
   return !!decisionMaking?.planLastMinuteChanges;
 };
 
 export const planLongTermNoticeComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => !!plan.decisionMaking?.planLongTermNotice);
+  }
   const decisionMaking = getSessionValue<any>(session, 'decisionMaking');
   return !!decisionMaking?.planLongTermNotice;
 };
 
 export const planReviewComplete = (session: Partial<CAPSession>) => {
+  if (isDesign2(session)) {
+    return checkAllChildren(session, plan => !!plan.decisionMaking?.planReview);
+  }
   const decisionMaking = getSessionValue<any>(session, 'decisionMaking');
   return !!decisionMaking?.planReview;
 };
