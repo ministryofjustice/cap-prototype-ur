@@ -4,14 +4,13 @@ metadata:
   name: ${KUBE_NAMESPACE}-config
   namespace: ${KUBE_NAMESPACE}
 data:
-  NODE_ENV: 'production'
+  NODE_ENV: 'development'
   USE_HTTPS: 'true'
   STATIC_RESOURCE_CACHE_DURATION: '1h'
   WEB_SESSION_TIMEOUT_IN_MINUTES: '120'
-  CACHE_ENABLED: 'true'
-  CACHE_TLS_ENABLED: 'true'
+  CACHE_ENABLED: 'false'
   INCLUDE_WELSH_LANGUAGE: 'true'
   USE_AUTH: 'true'
   CONTACT_EMAIL: 'childarrangements@justice.gov.uk'
   FEEDBACK_URL: 'https://www.smartsurvey.co.uk/s/EFO5FJ/'
-  PREVIEW_END: '2026-03-31T23:59:59'
+  PREVIEW_END: '2026-12-31T23:59:59'

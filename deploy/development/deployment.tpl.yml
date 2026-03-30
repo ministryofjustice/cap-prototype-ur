@@ -62,16 +62,6 @@ spec:
               value: '8080'
             - name: NODE_OPTIONS
               value: '--max-old-space-size=200'
-            - name: CACHE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: elasticache-redis
-                  key: primary_endpoint_address
-            - name: CACHE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: elasticache-redis
-                  key: auth_token
           envFrom:
             - configMapRef:
                 name: ${KUBE_NAMESPACE}-config
