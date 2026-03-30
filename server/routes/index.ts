@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { PerChildDesignMode } from '../@types/session';
 import config from '../config';
 import FORM_STEPS from '../constants/formSteps';
 import paths from '../constants/paths';
@@ -77,7 +78,7 @@ const routes = (): Router => {
     // Set the new service version and initialize completedSteps with START
     request.session.usePerChildPoC = newUsePerChildPoC;
     if (newDesignMode) {
-      request.session.perChildDesignMode = newDesignMode as any;
+      request.session.perChildDesignMode = newDesignMode as PerChildDesignMode;
     }
     request.session.completedSteps = [FORM_STEPS.START];
     request.session.planStartTime = Date.now();

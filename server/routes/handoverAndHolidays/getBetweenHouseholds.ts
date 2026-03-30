@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
 import { getBetweenHouseholdsField } from '../../@types/fields';
-import { GetBetweenHouseholdsAnswer } from '../../@types/session';
+import { CAPSession, GetBetweenHouseholdsAnswer } from '../../@types/session';
 import formFields from '../../constants/formFields';
 import FORM_STEPS from '../../constants/formSteps';
 import paths from '../../constants/paths';
@@ -34,7 +34,7 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
     const isD2 = isDesign2(request.session);
     const activeChildIndex = isD2 ? (request.session.currentChildIndex ?? 0) : 0;
     const activeChildName = isD2 ? namesOfChildren[activeChildIndex] : null;
-    const sessionHandoverAndHolidays = isD2 ? getSessionValue<any>(request.session, 'handoverAndHolidays') : handoverAndHolidays;
+    const sessionHandoverAndHolidays = isD2 ? getSessionValue<CAPSession['handoverAndHolidays']>(request.session, 'handoverAndHolidays') : handoverAndHolidays;
     const existingAnswers = sessionHandoverAndHolidays?.getBetweenHouseholds;
 
     // Build form values from existing session data
@@ -54,7 +54,7 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
 
       // Set per-child answers
       if (existingAnswers.byChild) {
-        Object.entries(existingAnswers.byChild).forEach(([childIndex, answer]: [string, any]) => {
+        Object.entries(existingAnswers.byChild).forEach(([childIndex, answer]) => {
           const idx = parseInt(childIndex, 10);
           if (answer.how) {
             childrenWithAnswers.push(idx);
@@ -146,7 +146,7 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
     (request, response) => {
       // Design 3: handle "specify per child" - switch to per-child (Design 2) mode
       if (isDesign3(request.session) && request.body['specify-per-child'] === 'yes') {
-        request.session.perChildDesignMode = 'design2' as any;
+        request.session.perChildDesignMode = 'design2';
         request.session.currentChildIndex = 0;
         if (!request.session.childPlans || request.session.childPlans.length === 0) {
           request.session.childPlans = (request.session.namesOfChildren || []).map((name: string, index: number) => ({
@@ -223,7 +223,7 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
       const { numberOfChildren } = request.session;
 
       const currentHandoverAndHolidays = isDesign2(request.session)
-        ? (getSessionValue<any>(request.session, 'handoverAndHolidays') || {})
+        ? (getSessionValue<CAPSession['handoverAndHolidays']>(request.session, 'handoverAndHolidays') || {})
         : (request.session.handoverAndHolidays || {});
 
       const newHAH = {
@@ -252,7 +252,7 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
           for (let i = 0; i < numberOfChildren; i++) {
             if (i !== savedIndex) {
               request.session.currentChildIndex = i;
-              const childHAH = getSessionValue<any>(request.session, 'handoverAndHolidays') || {};
+              const childHAH = getSessionValue<CAPSession['handoverAndHolidays']>(request.session, 'handoverAndHolidays') || {};
               setSessionSection(request.session, 'handoverAndHolidays', { ...childHAH, getBetweenHouseholds: newHAH.getBetweenHouseholds });
             }
           }
