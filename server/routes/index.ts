@@ -56,10 +56,10 @@ const routes = (): Router => {
     const { serviceVersion } = request.body;
 
     // Map service version to session flags
-    const validDesigns = ['current', 'design1', 'design2', 'design3', 'design4', 'poc'];
+    const validDesigns = ['current', 'design2', 'design3'];
     const design = validDesigns.includes(serviceVersion) ? serviceVersion : 'current';
     const newUsePerChildPoC = design !== 'current';
-    const newDesignMode = design !== 'current' && design !== 'poc' ? design : (design === 'poc' ? 'design1' : undefined);
+    const newDesignMode = design !== 'current' ? design : undefined;
 
     // Clear session data when starting fresh, but preserve session ID to keep CSRF token valid
     delete request.session.numberOfChildren;
