@@ -29,45 +29,6 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">{{ title }}</h1>
 
-      {# Design Toggle - Only show if more than one child #}
-      {% if showDesignToggle %}
-        <details class="govuk-details govuk-!-margin-bottom-6" data-module="govuk-details">
-          <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-              Change how you answer questions for different children
-            </span>
-          </summary>
-          <div class="govuk-details__text">
-            <p class="govuk-body">You have {{ numberOfChildren }} children. Choose how you want to provide answers:</p>
-
-            <form action="{{ paths.TOGGLE_DESIGN_MODE }}" method="post" class="govuk-!-margin-bottom-4">
-              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-
-              <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="design-mode-1" name="designMode" type="radio" value="design1" {{ "checked" if designMode == "design1" }}>
-                  <label class="govuk-label govuk-radios__label" for="design-mode-1">
-                    <strong>Design 1: Answer for all, then specify differences</strong>
-                    <span class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-0">Answer each question once, with the option to add different answers for specific children inline.</span>
-                  </label>
-                </div>
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input" id="design-mode-2" name="designMode" type="radio" value="design2" {{ "checked" if designMode == "design2" }}>
-                  <label class="govuk-label govuk-radios__label" for="design-mode-2">
-                    <strong>Design 2: Answer for each child separately</strong>
-                    <span class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-0">Complete the questions for each child one at a time. You can copy answers between children. Your final plan will include arrangements for all children.</span>
-                  </label>
-                </div>
-              </div>
-
-              <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-top-4">
-                Change design mode
-              </button>
-            </form>
-          </div>
-        </details>
-      {% endif %}
-
       {# Design 2: Show current child heading #}
       {% if isDesign2 %}
         <h2 class="govuk-heading-m">Answering for {{ currentChildName }}</h2>

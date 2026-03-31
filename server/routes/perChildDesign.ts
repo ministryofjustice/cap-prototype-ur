@@ -1,33 +1,12 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import { PerChildDesignMode } from '../@types/session';
 import paths from '../constants/paths';
 
 /**
  * Routes for managing per-child design mode toggle and Design 2 functionality
  */
 const perChildDesignRoutes = (router: Router) => {
-  /**
-   * POST: Toggle between Design 1 (inline per-child) and Design 2 (task list level)
-   */
-  router.post(paths.TOGGLE_DESIGN_MODE, (request, response) => {
-    const newMode = request.body.designMode as PerChildDesignMode;
-
-    if (!['design1', 'design2', 'design3', 'design4'].includes(newMode)) {
-      return response.redirect(paths.TASK_LIST);
-    }
-
-    request.session.perChildDesignMode = newMode;
-
-    // If switching to Design 2, initialize child plans if needed
-    if (newMode === 'design2' && request.session.numberOfChildren > 0) {
-      initializeChildPlans(request);
-    }
-
-    return response.redirect(paths.TASK_LIST);
-  });
-
   /**
    * POST: Select which child's plan to edit (Design 2)
    */

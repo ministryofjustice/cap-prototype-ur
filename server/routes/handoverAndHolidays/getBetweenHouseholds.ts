@@ -2,13 +2,13 @@ import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
 import { getBetweenHouseholdsField } from '../../@types/fields';
-import { CAPSession, GetBetweenHouseholdsAnswer } from '../../@types/session';
+import { CAPSession } from '../../@types/session';
 import formFields from '../../constants/formFields';
 import FORM_STEPS from '../../constants/formSteps';
 import paths from '../../constants/paths';
 import checkFormProgressFromConfig  from '../../middleware/checkFormProgressFromConfig';
 import addCompletedStep from '../../utils/addCompletedStep';
-import { isDesign2, isDesign3, isDesign4, isPerChildPoCEnabled, getSessionValue, setSessionSection } from '../../utils/perChildSession';
+import { isDesign2, isDesign3, isPerChildPoCEnabled, getSessionValue, setSessionSection } from '../../utils/perChildSession';
 import { getBackUrl } from '../../utils/sessionHelpers';
 
 // Helper to get the field name for a specific child index
@@ -16,9 +16,6 @@ const getFieldName = (childIndex: number) => `${formFields.GET_BETWEEN_HOUSEHOLD
 
 // Helper to get the describe arrangement field name for a specific child index
 const getDescribeArrangementFieldName = (childIndex: number) => `${formFields.GET_BETWEEN_HOUSEHOLDS_DESCRIBE_ARRANGEMENT}-${childIndex}`;
-
-// Helper to get the child selector field name for a specific entry index
-const _getChildSelectorFieldName = (entryIndex: number) => `child-selector-${entryIndex}`;
 
 // Helper to safely get a trimmed string from request body
 const safeString = (value: unknown): string => {
@@ -40,38 +37,15 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
     // Build form values from existing session data
     const formValues: Record<string, string> = {};
 
-    // Track which children have specific answers
-    const childrenWithAnswers: number[] = [];
-
     if (existingAnswers) {
-      // Set the default answer (shown as "all children" or first entry)
+      // Set the default answer
       if (existingAnswers.default?.how) {
         formValues[getFieldName(0)] = existingAnswers.default.how;
       }
       if (existingAnswers.default?.describeArrangement) {
         formValues[getDescribeArrangementFieldName(0)] = existingAnswers.default.describeArrangement;
       }
-
-      // Set per-child answers
-      if (existingAnswers.byChild) {
-        Object.entries(existingAnswers.byChild).forEach(([childIndex, answer]) => {
-          const idx = parseInt(childIndex, 10);
-          if (answer.how) {
-            childrenWithAnswers.push(idx);
-            formValues[getFieldName(idx)] = answer.how;
-            if (answer.describeArrangement) {
-              formValues[getDescribeArrangementFieldName(idx)] = answer.describeArrangement;
-            }
-          }
-        });
-      }
     }
-
-    // Build list of children for dropdown options
-    const childOptions = namesOfChildren.map((name, index) => ({
-      value: index.toString(),
-      text: name,
-    }));
 
     response.render('pages/handoverAndHolidays/getBetweenHouseholds', {
       errors: request.flash('errors'),
@@ -81,12 +55,8 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
       backLinkHref: getBackUrl(request.session, paths.TASK_LIST),
       numberOfChildren,
       namesOfChildren,
-      childOptions,
-      childrenWithAnswers,
       childProgressCaption: isD2 ? `Child ${activeChildIndex + 1} of ${numberOfChildren}` : null,
-      showPerChildOption: numberOfChildren > 1 && !isDesign2(request.session) && !isDesign3(request.session) && isPerChildPoCEnabled(request.session),
       showDesign3Option: numberOfChildren > 1 && isDesign3(request.session) && isPerChildPoCEnabled(request.session),
-      designMode: request.session.perChildDesignMode || 'design1',
     });
   });
 
@@ -170,56 +140,6 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
       const defaultHow = safeString(request.body[getFieldName(0)]);
       const defaultDescribeArrangement = safeString(request.body[getDescribeArrangementFieldName(0)]);
 
-      // Build the per-child answers structure
-      const byChild: Record<number, GetBetweenHouseholdsAnswer> = {};
-
-      // Check for additional per-child entries
-      // We look for patterns like child-selector-1, child-selector-2, etc.
-      // and their corresponding answer fields
-      let additionalEntries: Array<{childIndex: number, how: string, describeArrangement: string, entryIndex: number}>;
-
-      if (isDesign4(request.session)) {
-        // Design 4: checkboxes can select multiple children per entry
-        additionalEntries = Object.keys(request.body)
-          .filter(key => /^child-checkbox-\d+$/.test(key))
-          .flatMap(key => {
-            const entryIndex = parseInt(key.replace('child-checkbox-', ''), 10);
-            const rawValues = request.body[key];
-            const childIndices = (Array.isArray(rawValues) ? rawValues : [rawValues])
-              .map((v: string) => parseInt(v, 10))
-              .filter((v: number) => !isNaN(v));
-            const howFieldName = getFieldName(entryIndex);
-            const describeFieldName = getDescribeArrangementFieldName(entryIndex);
-            const how = safeString(request.body[howFieldName]);
-            const describeArrangement = safeString(request.body[describeFieldName]);
-            return childIndices.map(childIndex => ({ childIndex, how, describeArrangement, entryIndex }));
-          })
-          .filter(entry => entry.how);
-      } else {
-        // Design 1: SELECT dropdown with single child
-        additionalEntries = Object.keys(request.body)
-          .filter(key => key.startsWith('child-selector-'))
-          .map(key => {
-            const entryIndex = parseInt(key.replace('child-selector-', ''), 10);
-            const childIndex = parseInt(request.body[key], 10);
-            const howFieldName = getFieldName(entryIndex);
-            const describeFieldName = getDescribeArrangementFieldName(entryIndex);
-            const how = safeString(request.body[howFieldName]);
-            const describeArrangement = safeString(request.body[describeFieldName]);
-            return { childIndex, how, describeArrangement, entryIndex };
-          })
-          .filter(entry => !isNaN(entry.childIndex) && entry.how);
-      }
-
-      // Store per-child answers
-      additionalEntries.forEach(entry => {
-        byChild[entry.childIndex] = {
-          noDecisionRequired: false,
-          how: entry.how as getBetweenHouseholdsField,
-          describeArrangement: entry.how === 'other' ? entry.describeArrangement : undefined,
-        };
-      });
-
       const { numberOfChildren } = request.session;
 
       const currentHandoverAndHolidays = isDesign2(request.session)
@@ -234,7 +154,6 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
             how: defaultHow as getBetweenHouseholdsField,
             describeArrangement: defaultHow === 'other' ? defaultDescribeArrangement : undefined,
           },
-          ...(Object.keys(byChild).length > 0 ? { byChild } : {}),
         },
       };
 

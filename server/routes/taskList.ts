@@ -141,13 +141,6 @@ const taskListRoutes = (router: Router) => {
 
     response.render('pages/taskList', {
       title: request.__('taskList.title', { names: formattedChildrenNames(request) }),
-      // Design mode toggle - hidden for now, keeping Design 1 as the default
-      designMode,
-      designModeLabel: designMode === 'design1' ? 'Design 1: Answer for all, then specify per child (dropdown)' :
-                       designMode === 'design2' ? 'Design 2: Answer for each child separately' :
-                       designMode === 'design3' ? 'Design 3: Answer once, then specify per child' :
-                       designMode === 'design4' ? 'Design 4: Answer for all, then specify per child (checkboxes)' : null,
-      showDesignToggle: false,
       numberOfChildren,
       namesOfChildren,
       // This should only be true when all tasks are complete

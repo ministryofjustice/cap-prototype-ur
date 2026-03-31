@@ -2,20 +2,16 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import { WhichScheduleAnswer } from '../../@types/session';
 import formFields from '../../constants/formFields';
 import FORM_STEPS from '../../constants/formSteps';
 import paths from '../../constants/paths';
 import checkFormProgressFromConfig  from '../../middleware/checkFormProgressFromConfig';
 import addCompletedStep from '../../utils/addCompletedStep';
-import { isDesign2, isDesign3, isDesign4, isPerChildPoCEnabled, getSessionValue, setSessionSection } from '../../utils/perChildSession';
+import { isDesign2, isDesign3, isPerChildPoCEnabled, getSessionValue, setSessionSection } from '../../utils/perChildSession';
 import { getBackUrl, getRedirectUrlAfterFormSubmit } from '../../utils/sessionHelpers';
 
 // Helper to get the field name for a specific child index
 const getFieldName = (childIndex: number) => `${formFields.WHICH_SCHEDULE}-${childIndex}`;
-
-// Helper to get the child selector field name for a specific entry index
-const _getChildSelectorFieldName = (entryIndex: number) => `child-selector-${entryIndex}`;
 
 // Helper to safely get a trimmed string from request body
 const safeString = (value: unknown): string => {
@@ -37,9 +33,6 @@ const whichScheduleRoutes = (router: Router) => {
     // Build form values from existing session data
     const formValues: Record<string, string> = {};
 
-    // Track which children have specific answers
-    const childrenWithAnswers: number[] = [];
-
     if (existingAnswers) {
       // Handle both old format (direct answer) and new PerChildAnswer format
       if (existingAnswers.default?.answer) {
@@ -48,27 +41,10 @@ const whichScheduleRoutes = (router: Router) => {
         // Legacy format - direct answer without default wrapper
         formValues[getFieldName(0)] = existingAnswers.answer;
       }
-
-      // Set per-child answers
-      if (existingAnswers.byChild) {
-        Object.entries(existingAnswers.byChild).forEach(([childIndex, answer]: [string, any]) => {
-          const idx = parseInt(childIndex, 10);
-          if (answer.answer) {
-            childrenWithAnswers.push(idx);
-            formValues[getFieldName(idx)] = answer.answer;
-          }
-        });
-      }
     }
 
     // Merge with flash values
     const flashValues = request.flash('formValues')?.[0] || {};
-
-    // Build list of children for dropdown options
-    const childOptions = namesOfChildren.map((name, index) => ({
-      value: index.toString(),
-      text: name,
-    }));
 
     response.render('pages/livingAndVisiting/whichSchedule', {
       errors: request.flash('errors'),
@@ -77,12 +53,8 @@ const whichScheduleRoutes = (router: Router) => {
       backLinkHref: getBackUrl(request.session, paths.LIVING_VISITING_MOSTLY_LIVE),
       numberOfChildren,
       namesOfChildren,
-      childOptions,
-      childrenWithAnswers,
       childProgressCaption: isD2 ? `Child ${activeChildIndex + 1} of ${numberOfChildren}` : null,
-      showPerChildOption: numberOfChildren > 1 && !isD2 && !isDesign3(request.session) && isPerChildPoCEnabled(request.session),
       showDesign3Option: numberOfChildren > 1 && isDesign3(request.session) && isPerChildPoCEnabled(request.session),
-      designMode: request.session.perChildDesignMode || 'design1',
     });
   });
 
@@ -147,55 +119,11 @@ const whichScheduleRoutes = (router: Router) => {
       // Process the default answer
       const defaultAnswer = safeString(request.body[getFieldName(0)]);
 
-      // Build the per-child answers structure
-      const byChild: Record<number, WhichScheduleAnswer> = {};
-
-      // Check for additional per-child entries
-      let additionalEntries: Array<{childIndex: number, answer: string, entryIndex: number}>;
-
-      if (isDesign4(request.session)) {
-        // Design 4: checkboxes can select multiple children per entry
-        additionalEntries = Object.keys(request.body)
-          .filter(key => /^child-checkbox-\d+$/.test(key))
-          .flatMap(key => {
-            const entryIndex = parseInt(key.replace('child-checkbox-', ''), 10);
-            const rawValues = request.body[key];
-            const childIndices = (Array.isArray(rawValues) ? rawValues : [rawValues])
-              .map((v: string) => parseInt(v, 10))
-              .filter((v: number) => !isNaN(v));
-            const answerFieldName = getFieldName(entryIndex);
-            const answer = safeString(request.body[answerFieldName]);
-            return childIndices.map(childIndex => ({ childIndex, answer, entryIndex }));
-          })
-          .filter(entry => entry.answer);
-      } else {
-        // Design 1: SELECT dropdown with single child
-        additionalEntries = Object.keys(request.body)
-          .filter(key => key.startsWith('child-selector-'))
-          .map(key => {
-            const entryIndex = parseInt(key.replace('child-selector-', ''), 10);
-            const childIndex = parseInt(request.body[key], 10);
-            const answerFieldName = getFieldName(entryIndex);
-            const answer = safeString(request.body[answerFieldName]);
-            return { childIndex, answer, entryIndex };
-          })
-          .filter(entry => !isNaN(entry.childIndex) && entry.answer);
-      }
-
-      // Store per-child answers
-      additionalEntries.forEach(entry => {
-        byChild[entry.childIndex] = {
-          noDecisionRequired: false,
-          answer: entry.answer,
-        };
-      });
-
       const newWhichSchedule = {
         default: {
           noDecisionRequired: false,
           answer: defaultAnswer,
         },
-        ...(Object.keys(byChild).length > 0 ? { byChild } : {}),
       };
 
       const livingAndVisiting = getSessionValue<any>(request.session, 'livingAndVisiting') || {};

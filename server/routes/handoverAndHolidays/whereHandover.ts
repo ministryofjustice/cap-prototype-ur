@@ -2,13 +2,13 @@ import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
 import { whereHandoverField } from '../../@types/fields';
-import { CAPSession, WhereHandoverAnswer } from '../../@types/session';
+import { CAPSession } from '../../@types/session';
 import formFields from '../../constants/formFields';
 import FORM_STEPS from '../../constants/formSteps';
 import paths from '../../constants/paths';
 import checkFormProgressFromConfig  from '../../middleware/checkFormProgressFromConfig';
 import addCompletedStep from '../../utils/addCompletedStep';
-import { isAnswerPerChild, isDesign2, isDesign3, isDesign4, isPerChildPoCEnabled, getSessionValue, setSessionSection } from '../../utils/perChildSession';
+import { isDesign2, isDesign3, isPerChildPoCEnabled, getSessionValue, setSessionSection } from '../../utils/perChildSession';
 import { getBackUrl } from '../../utils/sessionHelpers';
 
 // Helper to get the field name for a specific child index
@@ -16,9 +16,6 @@ const getFieldName = (childIndex: number) => `${formFields.WHERE_HANDOVER}-${chi
 
 // Helper to get the someone else field name for a specific child index
 const getSomeoneElseFieldName = (childIndex: number) => `${formFields.WHERE_HANDOVER_SOMEONE_ELSE}-${childIndex}`;
-
-// Helper to get the child selector field name for a specific entry index
-const _getChildSelectorFieldName = (entryIndex: number) => `child-selector-${entryIndex}`;
 
 // Helper to safely get a trimmed string from request body
 const safeString = (value: unknown): string => {
@@ -51,38 +48,15 @@ const whereHandoverRoutes = (router: Router) => {
     // Build form values from existing session data
     const formValues: Record<string, string | string[]> = {};
 
-    // Track which children have specific answers
-    const childrenWithAnswers: number[] = [];
-
     if (existingAnswers) {
-      // Set the default answer (shown as "all children" or first entry)
+      // Set the default answer
       if (existingAnswers.default?.where) {
         formValues[getFieldName(0)] = existingAnswers.default.where;
       }
       if (existingAnswers.default?.someoneElse) {
         formValues[getSomeoneElseFieldName(0)] = existingAnswers.default.someoneElse;
       }
-
-      // Set per-child answers
-      if (existingAnswers.byChild) {
-        Object.entries(existingAnswers.byChild).forEach(([childIndex, answer]) => {
-          const idx = parseInt(childIndex, 10);
-          if (answer.where) {
-            childrenWithAnswers.push(idx);
-            formValues[getFieldName(idx)] = answer.where;
-            if (answer.someoneElse) {
-              formValues[getSomeoneElseFieldName(idx)] = answer.someoneElse;
-            }
-          }
-        });
-      }
     }
-
-    // Build list of children for dropdown options
-    const childOptions = namesOfChildren.map((name, index) => ({
-      value: index.toString(),
-      text: name,
-    }));
 
     response.render('pages/handoverAndHolidays/whereHandover', {
       errors: request.flash('errors'),
@@ -92,12 +66,8 @@ const whereHandoverRoutes = (router: Router) => {
       backLinkHref: getBackUrl(request.session, paths.HANDOVER_HOLIDAYS_GET_BETWEEN_HOUSEHOLDS),
       numberOfChildren,
       namesOfChildren,
-      childOptions,
-      childrenWithAnswers,
       childProgressCaption: isD2 ? `Child ${activeChildIndex + 1} of ${numberOfChildren}` : null,
-      showPerChildOption: numberOfChildren > 1 && isAnswerPerChild(request.session) && !isDesign3(request.session) && isPerChildPoCEnabled(request.session),
       showDesign3Option: numberOfChildren > 1 && isDesign3(request.session) && isPerChildPoCEnabled(request.session),
-      designMode: request.session.perChildDesignMode || 'design1',
     });
   });
 
@@ -203,56 +173,6 @@ const whereHandoverRoutes = (router: Router) => {
       const defaultWhere = safeArray(request.body[getFieldName(0)]);
       const defaultSomeoneElse = safeString(request.body[getSomeoneElseFieldName(0)]);
 
-      // Build the per-child answers structure
-      const byChild: Record<number, WhereHandoverAnswer> = {};
-
-      // Check for additional per-child entries
-      // We look for patterns like child-selector-1, child-selector-2, etc.
-      // and their corresponding answer fields
-      let additionalEntries: Array<{childIndex: number, where: string[], someoneElse: string, entryIndex: number}>;
-
-      if (isDesign4(request.session)) {
-        // Design 4: checkboxes can select multiple children per entry
-        additionalEntries = Object.keys(request.body)
-          .filter(key => /^child-checkbox-\d+$/.test(key))
-          .flatMap(key => {
-            const entryIndex = parseInt(key.replace('child-checkbox-', ''), 10);
-            const rawValues = request.body[key];
-            const childIndices = (Array.isArray(rawValues) ? rawValues : [rawValues])
-              .map((v: string) => parseInt(v, 10))
-              .filter((v: number) => !isNaN(v));
-            const whereFieldName = getFieldName(entryIndex);
-            const someoneElseFieldName = getSomeoneElseFieldName(entryIndex);
-            const where = safeArray(request.body[whereFieldName]);
-            const someoneElse = safeString(request.body[someoneElseFieldName]);
-            return childIndices.map(childIndex => ({ childIndex, where, someoneElse, entryIndex }));
-          })
-          .filter(entry => entry.where.length > 0);
-      } else {
-        // Design 1: SELECT dropdown with single child
-        additionalEntries = Object.keys(request.body)
-          .filter(key => key.startsWith('child-selector-'))
-          .map(key => {
-            const entryIndex = parseInt(key.replace('child-selector-', ''), 10);
-            const childIndex = parseInt(request.body[key], 10);
-            const whereFieldName = getFieldName(entryIndex);
-            const someoneElseFieldName = getSomeoneElseFieldName(entryIndex);
-            const where = safeArray(request.body[whereFieldName]);
-            const someoneElse = safeString(request.body[someoneElseFieldName]);
-            return { childIndex, where, someoneElse, entryIndex };
-          })
-          .filter(entry => !isNaN(entry.childIndex) && entry.where.length > 0);
-      }
-
-      // Store per-child answers
-      additionalEntries.forEach(entry => {
-        byChild[entry.childIndex] = {
-          noDecisionRequired: false,
-          where: entry.where as whereHandoverField[],
-          someoneElse: entry.where.includes('someoneElse') ? entry.someoneElse : undefined,
-        };
-      });
-
       const { numberOfChildren } = request.session;
 
       const newWhereHandover = {
@@ -261,7 +181,6 @@ const whereHandoverRoutes = (router: Router) => {
           where: defaultWhere as whereHandoverField[],
           someoneElse: defaultWhere.includes('someoneElse') ? defaultSomeoneElse : undefined,
         },
-        ...(Object.keys(byChild).length > 0 ? { byChild } : {}),
       };
 
       if (isDesign2(request.session)) {
