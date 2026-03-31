@@ -145,7 +145,7 @@ const howChangeDuringSchoolHolidaysRoutes = (router: Router) => {
             }
           }
           request.session.currentChildIndex = 0;
-          return response.redirect(paths.TASK_LIST);
+          return response.redirect(paths.HANDOVER_HOLIDAYS_ITEMS_FOR_CHANGEOVER);
         }
         const nextChildIndex = (request.session.currentChildIndex ?? 0) + 1;
         if (nextChildIndex < numberOfChildren) {
@@ -153,7 +153,7 @@ const howChangeDuringSchoolHolidaysRoutes = (router: Router) => {
           return response.redirect(paths.HANDOVER_HOLIDAYS_HOW_CHANGE_DURING_SCHOOL_HOLIDAYS);
         }
         request.session.currentChildIndex = 0;
-        return response.redirect(paths.TASK_LIST);
+        return response.redirect(paths.HANDOVER_HOLIDAYS_ITEMS_FOR_CHANGEOVER);
       }
 
       return response.redirect(paths.HANDOVER_HOLIDAYS_ITEMS_FOR_CHANGEOVER);

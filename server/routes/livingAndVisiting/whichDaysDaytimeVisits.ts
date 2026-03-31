@@ -9,11 +9,15 @@ import paths from '../../constants/paths';
 import checkFormProgressFromConfig  from '../../middleware/checkFormProgressFromConfig';
 import addCompletedStep from '../../utils/addCompletedStep';
 import { convertWhichDaysFieldToSessionValue, convertWhichDaysSessionValueToField } from '../../utils/formValueUtils';
-import { getSessionValue, setSessionSection } from '../../utils/perChildSession';
+import { isDesign2, getSessionValue, setSessionSection } from '../../utils/perChildSession';
 import { getBackUrl, getRedirectUrlAfterFormSubmit } from '../../utils/sessionHelpers';
 
 const whichDaysDaytimeVisitsRoutes = (router: Router) => {
   router.get(paths.LIVING_VISITING_WHICH_DAYS_DAYTIME_VISITS, checkFormProgressFromConfig(FORM_STEPS.LIVING_VISITING_WHICH_DAYS_DAYTIME_VISITS), (request, response) => {
+    const { numberOfChildren, namesOfChildren } = request.session;
+    const isD2 = isDesign2(request.session);
+    const activeChildIndex = isD2 ? (request.session.currentChildIndex ?? 0) : 0;
+    const activeChildName = isD2 ? namesOfChildren[activeChildIndex] : null;
     const livingAndVisiting = getSessionValue<any>(request.session, 'livingAndVisiting');
     const daytimeVisits = livingAndVisiting?.daytimeVisits;
 
@@ -28,8 +32,11 @@ const whichDaysDaytimeVisitsRoutes = (router: Router) => {
     response.render('pages/livingAndVisiting/whichDaysDaytimeVisits', {
       errors: request.flash('errors'),
       formValues,
-      title: request.__('livingAndVisiting.whichDaysDaytimeVisits.title'),
+      title: isD2
+        ? `Which days will ${activeChildName} have daytime visits?`
+        : request.__('livingAndVisiting.whichDaysDaytimeVisits.title'),
       backLinkHref: getBackUrl(request.session, paths.LIVING_VISITING_WILL_DAYTIME_VISITS_HAPPEN),
+      childProgressCaption: isD2 ? `Child ${activeChildIndex + 1} of ${numberOfChildren}` : null,
     });
   });
 
@@ -69,16 +76,44 @@ const whichDaysDaytimeVisitsRoutes = (router: Router) => {
         [formFields.WHICH_DAYS_DAYTIME_VISITS_DESCRIBE_ARRANGEMENT]: describeArrangement,
       } = formData;
 
+      const whichDaysValue = convertWhichDaysFieldToSessionValue(whichDays, describeArrangement);
+
       const livingAndVisiting = getSessionValue<any>(request.session, 'livingAndVisiting') || {};
       setSessionSection(request.session, 'livingAndVisiting', {
         ...livingAndVisiting,
         daytimeVisits: {
           ...livingAndVisiting.daytimeVisits,
-          whichDays: convertWhichDaysFieldToSessionValue(whichDays, describeArrangement),
+          whichDays: whichDaysValue,
         },
       });
 
       addCompletedStep(request, FORM_STEPS.LIVING_VISITING_WHICH_DAYS_DAYTIME_VISITS);
+
+      if (isDesign2(request.session)) {
+        const { numberOfChildren } = request.session;
+        if (request.body['apply-to-all'] === 'yes') {
+          const savedIndex = request.session.currentChildIndex ?? 0;
+          for (let i = 0; i < numberOfChildren; i++) {
+            if (i !== savedIndex) {
+              request.session.currentChildIndex = i;
+              const childLAV = getSessionValue<any>(request.session, 'livingAndVisiting') || {};
+              setSessionSection(request.session, 'livingAndVisiting', {
+                ...childLAV,
+                daytimeVisits: { ...childLAV.daytimeVisits, whichDays: whichDaysValue },
+              });
+            }
+          }
+          request.session.currentChildIndex = 0;
+        } else {
+          const nextChildIndex = (request.session.currentChildIndex ?? 0) + 1;
+          if (nextChildIndex < numberOfChildren) {
+            request.session.currentChildIndex = nextChildIndex;
+            return response.redirect(paths.LIVING_VISITING_WHICH_DAYS_DAYTIME_VISITS);
+          }
+          request.session.currentChildIndex = 0;
+        }
+        return response.redirect(paths.TASK_LIST);
+      }
 
       return response.redirect(getRedirectUrlAfterFormSubmit(request.session, paths.TASK_LIST));
     },

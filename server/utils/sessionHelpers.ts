@@ -43,11 +43,8 @@ export const mostlyLiveComplete = (session: Partial<CAPSession>) => {
       const lv = plan.livingAndVisiting;
       if (!lv?.mostlyLive) return false;
       const where = getMostlyLiveWhere(lv.mostlyLive);
-      if (where === 'other') return true;
       if (where === 'split') return !!lv.whichSchedule;
-      const overnightComplete = lv.overnightVisits?.willHappen !== undefined && (!lv.overnightVisits.willHappen || !!lv.overnightVisits.whichDays);
-      const daytimeComplete = lv.daytimeVisits?.willHappen !== undefined && (!lv.daytimeVisits.willHappen || !!lv.daytimeVisits.whichDays);
-      return overnightComplete && daytimeComplete;
+      return true; // 'other', 'withInitial', 'withSecondary' — mostlyLive answered is enough
     });
   }
   const livingAndVisiting = getSessionValue<any>(session, 'livingAndVisiting');

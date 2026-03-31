@@ -8,6 +8,7 @@
       {% include "partials/errorSummary.njk" %}
       <form class="form" action="{{ paths.HANDOVER_HOLIDAYS_ITEMS_FOR_CHANGEOVER }}" method="post" novalidate>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {% if childProgressCaption %}<span class="govuk-caption-l">{{ childProgressCaption }}</span>{% endif %}
         {{
           govukTextarea({
             label: {
@@ -23,6 +24,16 @@
             errorMessage: errors | findError(formFields.ITEMS_FOR_CHANGEOVER)
           })
         }}
+        {% if childProgressCaption %}
+          <div class="govuk-checkboxes govuk-!-margin-bottom-4" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" id="apply-to-all" name="apply-to-all" type="checkbox" value="yes">
+              <label class="govuk-label govuk-checkboxes__label" for="apply-to-all">
+                Apply this answer to all children
+              </label>
+            </div>
+          </div>
+        {% endif %}
         {{ govukButton({text: __('continue')}) }}
       </form>
       <form

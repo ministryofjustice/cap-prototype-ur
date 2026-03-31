@@ -177,7 +177,13 @@ const mostlyLiveRoutes = (router: Router) => {
             }
           }
           request.session.currentChildIndex = 0;
-          return response.redirect(paths.TASK_LIST);
+          // Route based on child 0's answer
+          const child0LAV = getSessionValue<any>(request.session, 'livingAndVisiting') || {};
+          const child0Where = child0LAV?.mostlyLive?.default?.where || child0LAV?.mostlyLive?.where;
+          if (child0Where === 'split') {
+            return response.redirect(paths.LIVING_VISITING_WHICH_SCHEDULE);
+          }
+          return response.redirect(paths.LIVING_VISITING_WILL_OVERNIGHTS_HAPPEN);
         }
         const nextChildIndex = (request.session.currentChildIndex ?? 0) + 1;
         if (nextChildIndex < request.session.numberOfChildren) {
@@ -185,7 +191,13 @@ const mostlyLiveRoutes = (router: Router) => {
           return response.redirect(paths.LIVING_VISITING_MOSTLY_LIVE);
         }
         request.session.currentChildIndex = 0;
-        return response.redirect(paths.TASK_LIST);
+        // All children answered — route based on child 0's answer
+        const child0LAV = getSessionValue<any>(request.session, 'livingAndVisiting') || {};
+        const child0Where = child0LAV?.mostlyLive?.default?.where || child0LAV?.mostlyLive?.where;
+        if (child0Where === 'split') {
+          return response.redirect(paths.LIVING_VISITING_WHICH_SCHEDULE);
+        }
+        return response.redirect(paths.LIVING_VISITING_WILL_OVERNIGHTS_HAPPEN);
       }
 
       switch (defaultWhere) {
