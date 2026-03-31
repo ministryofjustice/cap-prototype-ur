@@ -84,7 +84,7 @@ const getBetweenHouseholdsRoutes = (router: Router) => {
       childOptions,
       childrenWithAnswers,
       childProgressCaption: isD2 ? `Child ${activeChildIndex + 1} of ${numberOfChildren}` : null,
-      showPerChildOption: numberOfChildren > 1 && !isDesign3(request.session) && isPerChildPoCEnabled(request.session),
+      showPerChildOption: numberOfChildren > 1 && !isDesign2(request.session) && !isDesign3(request.session) && isPerChildPoCEnabled(request.session),
       showDesign3Option: numberOfChildren > 1 && isDesign3(request.session) && isPerChildPoCEnabled(request.session),
       designMode: request.session.perChildDesignMode || 'design1',
     });
